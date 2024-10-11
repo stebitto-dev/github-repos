@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stebitto.common.theme.MyApplicationTheme
 import com.stebitto.feature_login.impl.R
 
 const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
@@ -154,5 +155,7 @@ fun LoginCard(
 )
 @Composable
 fun LoginCardPreview() {
-    LoginCard(username = "", password = "", error = "", isLoading = false)
+    MyApplicationTheme {
+        LoginCard(username = "", password = "", error = "", isLoading = false)
+    }
 }
