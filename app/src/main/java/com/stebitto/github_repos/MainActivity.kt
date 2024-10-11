@@ -3,9 +3,14 @@ package com.stebitto.github_repos
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.stebitto.common.theme.MyApplicationTheme
+import com.stebitto.feature_login.impl.LoginRoutes
+import com.stebitto.feature_login.impl.loginRoutes
 
 class MainActivity : ComponentActivity() {
 
@@ -13,9 +18,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MaterialTheme {
-                Surface {
-                   Text("Hello world!")
+            MyApplicationTheme {
+                Scaffold { innerPadding ->
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = LoginRoutes.LOGIN.name,
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        loginRoutes(
+                            onLoginSuccess = {},
+                            onNavigateBack = { navController.popBackStack() }
+                        )
+                    }
                 }
             }
         }

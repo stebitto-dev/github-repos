@@ -23,6 +23,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBomVersion" }
 koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-test-junit = { module = "io.insert-koin:koin-test-junit4" }
 
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }

@@ -38,21 +38,24 @@ android {
 
 dependencies {
 
+    implementation project(":feature_login:impl")
+    implementation project(":common")
+
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
 
     // koin
-    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
     implementation(libs.koin.test.junit)
 
     // compose
-    implementation(project.dependencies.platform(libs.compose.bom))
+    implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
     implementation(libs.compose.preview)
-    implementation(libs.compose.test.manifest)
     implementation(libs.compose.activity)
+    implementation(libs.compose.navigation)
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

@@ -41,9 +41,15 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.material
 
+    // koin
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+
     // compose
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
+    implementation(libs.compose.navigation)
     implementation(libs.compose.activity)
     implementation(libs.compose.preview)
     debugImplementation(libs.compose.ui.tooling)

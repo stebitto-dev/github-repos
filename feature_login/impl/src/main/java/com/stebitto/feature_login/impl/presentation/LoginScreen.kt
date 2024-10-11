@@ -35,14 +35,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stebitto.common.theme.MyApplicationTheme
 import com.stebitto.feature_login.impl.R
+import org.koin.androidx.compose.koinViewModel
 
 const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
 const val TEST_LOADING_INDICATOR = "TEST_LOADING_INDICATOR"
 const val TEST_BUTTON_LOGIN = "TEST_BUTTON_LOGIN"
 
 @Composable
-fun LoginScreen(
-    loginViewmodel: LoginViewModel,
+internal fun LoginScreen(
+    loginViewmodel: LoginViewModel = koinViewModel(),
     onLoginSuccess: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
