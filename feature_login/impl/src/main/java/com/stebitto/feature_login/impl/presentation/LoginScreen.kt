@@ -1,4 +1,4 @@
-package com.stebitto.feature_login.impl
+package com.stebitto.feature_login.impl.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -26,13 +26,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stebitto.feature_login.impl.R
 
+const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
+const val TEST_LOADING_INDICATOR = "TEST_LOADING_INDICATOR"
+const val TEST_BUTTON_LOGIN = "TEST_BUTTON_LOGIN"
 
 @Composable
 fun LoginScreen(
@@ -112,7 +117,9 @@ fun LoginCard(
                 Text(
                     text = error,
                     color = Color.Red,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .testTag(TEST_ERROR_MESSAGE)
                 )
             }
 
@@ -123,9 +130,14 @@ fun LoginCard(
                 contentAlignment = Alignment.Center
             ) {
                 if (isLoading) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.testTag(TEST_LOADING_INDICATOR)
+                    )
                 } else {
-                    Button(onClick = { onLoginClick() }) {
+                    Button(
+                        onClick = { onLoginClick() },
+                        modifier = Modifier.testTag(TEST_BUTTON_LOGIN)
+                    ) {
                         Text(stringResource(R.string.login_button_text))
                     }
                 }
