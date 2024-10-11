@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.stebitto.common.theme.MyApplicationTheme
-import com.stebitto.feature_login.impl.LoginRoutes
-import com.stebitto.feature_login.impl.loginRoutes
+import com.stebitto.feature_login.api.LoginRoutes
+import com.stebitto.feature_login.api.loginRoutes
 
 class MainActivity : ComponentActivity() {
 

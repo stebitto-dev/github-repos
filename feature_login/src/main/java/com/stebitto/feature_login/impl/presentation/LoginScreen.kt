@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stebitto.common.theme.MyApplicationTheme
-import com.stebitto.feature_login.impl.R
+import com.stebitto.feature_login.R
 import org.koin.androidx.compose.koinViewModel
 
 const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
@@ -64,7 +64,7 @@ internal fun LoginScreen(
 }
 
 @Composable
-fun LoginCard(
+internal fun LoginCard(
     username: String,
     password: String,
     error: String,
@@ -155,7 +155,7 @@ fun LoginCard(
     name = "Dark Mode"
 )
 @Composable
-fun LoginCardPreview() {
+internal fun LoginCardPreview() {
     MyApplicationTheme {
         LoginCard(username = "", password = "", error = "", isLoading = false)
     }

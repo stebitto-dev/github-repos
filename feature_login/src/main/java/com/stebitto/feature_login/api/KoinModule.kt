@@ -1,4 +1,4 @@
-package com.stebitto.feature_login.impl.di
+package com.stebitto.feature_login.api
 
 import com.stebitto.feature_login.impl.presentation.LoginViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

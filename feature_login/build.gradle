@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.stebitto.feature_login.impl'
+    namespace 'com.stebitto.feature_login'
     compileSdk 34
 
     defaultConfig {

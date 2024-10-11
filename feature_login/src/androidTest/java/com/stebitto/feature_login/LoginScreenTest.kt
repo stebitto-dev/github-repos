@@ -1,4 +1,4 @@
-package com.stebitto.feature_login.impl
+package com.stebitto.feature_login
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule

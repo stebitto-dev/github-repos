@@ -1,4 +1,4 @@
-package com.stebitto.feature_login.impl
+package com.stebitto.feature_login
 
 import org.junit.Test
 
