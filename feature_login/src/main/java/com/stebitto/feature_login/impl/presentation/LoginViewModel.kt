@@ -11,16 +11,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class LoginViewModel(
-    private val loginUseCase: GithubLoginUseCase
+    private val loginUseCase: GithubLoginUseCase,
+    initialState: LoginState = LoginState()
 ) : MVIViewModel<LoginState, LoginIntent>, ViewModel() {
 
-    private val _state = MutableStateFlow(LoginState())
+    private val _state = MutableStateFlow(initialState)
     override val state: StateFlow<LoginState>
         get() = _state.asStateFlow()
 
     override fun dispatch(intent: LoginIntent) {
         when (intent) {
-            is Login -> viewModelScope.launch {
+            is LoginIntent.Login -> viewModelScope.launch {
                 val loginResult = loginUseCase(intent.username, intent.password)
                 if (loginResult.isSuccess) {
                     _state.update {

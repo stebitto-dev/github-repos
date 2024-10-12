@@ -57,7 +57,13 @@ dependencies {
     androidTestImplementation platform(libs.compose.bom)
     androidTestImplementation(libs.compose.ui.test.junit4)
 
+    // mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kolin)
+
     testImplementation libs.junit
+    testImplementation libs.androidx.core.testing
+    testImplementation libs.kotlin.coroutine.test
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
 }
