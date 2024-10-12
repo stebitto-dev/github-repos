@@ -1,4 +1,4 @@
-package com.stebitto.common.theme
+package com.stebitto.common.api.theme
 
 import androidx.compose.ui.graphics.Color
 
