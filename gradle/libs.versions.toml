@@ -6,7 +6,6 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
-coreTestingVersion = "2.2.0"
 material = "1.12.0"
 coroutineTestVersion = "1.9.0-RC.2"
 koinBomVersion = "3.5.6"
@@ -16,6 +15,7 @@ composeNavigationVerson = "2.8.2"
 composeUiToolingVersion = "1.7.3"
 mockitoCoreVersion = "4.8.0"
 mockitoKotlinVersion = "4.0.0"
+turbineVersion = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -23,7 +23,6 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTestingVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 kotlin-coroutine-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutineTestVersion" }
 
@@ -43,6 +42,8 @@ compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4
 
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCoreVersion" }
 mockito-kolin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlinVersion"}
+
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbineVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

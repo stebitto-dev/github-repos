@@ -1,6 +1,6 @@
 package com.stebitto.feature_login
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import app.cash.turbine.test
 import com.stebitto.common.api.models.LoginDTO
 import com.stebitto.feature_login.api.data.GithubLoginUseCase
 import com.stebitto.feature_login.impl.presentation.LoginIntent
@@ -15,7 +15,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -23,9 +22,6 @@ import org.mockito.MockitoAnnotations
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -35,6 +31,7 @@ class LoginViewModelTest {
     private lateinit var loginViewModel: LoginViewModel
 
     private val initialState = LoginState()
+    private val loadingState = LoginState(isLoading = true, isLoggedIn = false, errorMessage = null)
 
     @Before
     fun setup() {
@@ -62,9 +59,12 @@ class LoginViewModelTest {
 
         Mockito.`when`(loginUseCase(username, password)).thenReturn(resultSuccess)
 
-        loginViewModel.dispatch(LoginIntent.Login(username, password))
-
-        assertEquals(stateSuccess, loginViewModel.state.value)
+        loginViewModel.state.test {
+            assertEquals(initialState, awaitItem())
+            loginViewModel.dispatch(LoginIntent.Login(username, password))
+            assertEquals(loadingState, awaitItem())
+            assertEquals(stateSuccess, awaitItem())
+        }
     }
 
     @Test
@@ -77,8 +77,11 @@ class LoginViewModelTest {
 
         Mockito.`when`(loginUseCase(username, password)).thenReturn(resultFailure)
 
-        loginViewModel.dispatch(LoginIntent.Login(username, password))
-
-        assertEquals(stateFailure, loginViewModel.state.value)
+        loginViewModel.state.test {
+            assertEquals(initialState, awaitItem())
+            loginViewModel.dispatch(LoginIntent.Login(username, password))
+            assertEquals(loadingState, awaitItem())
+            assertEquals(stateFailure, awaitItem())
+        }
     }
 }

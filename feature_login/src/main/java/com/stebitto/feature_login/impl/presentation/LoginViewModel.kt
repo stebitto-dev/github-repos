@@ -22,10 +22,12 @@ internal class LoginViewModel(
     override fun dispatch(intent: LoginIntent) {
         when (intent) {
             is LoginIntent.Login -> viewModelScope.launch {
+                _state.update { it.copy(isLoading = true) }
+
                 val loginResult = loginUseCase(intent.username, intent.password)
                 if (loginResult.isSuccess) {
                     _state.update {
-                        it.copy(
+                        LoginState(
                             isLoading = false,
                             isLoggedIn = true,
                             errorMessage = null
@@ -33,7 +35,7 @@ internal class LoginViewModel(
                     }
                 } else {
                     _state.update {
-                        it.copy(
+                        LoginState(
                             isLoading = false,
                             isLoggedIn = false,
                             errorMessage = loginResult.exceptionOrNull()?.message
