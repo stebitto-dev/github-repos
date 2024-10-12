@@ -16,6 +16,9 @@ composeUiToolingVersion = "1.7.3"
 mockitoCoreVersion = "4.8.0"
 mockitoKotlinVersion = "4.0.0"
 turbineVersion = "1.1.0"
+gmsVersion = "4.4.2"
+firebaseBomVersion = "33.4.0"
+firebaseUIVersion = "8.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,9 +48,15 @@ mockito-kolin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version
 
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbineVersion" }
 
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBomVersion" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-auth-ui = { group = "com.firebaseui", name = "firebase-ui-auth", version.ref = "firebaseUIVersion" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+gms-services = { id = "com.google.gms.google-services", version.ref = "gmsVersion" }
 

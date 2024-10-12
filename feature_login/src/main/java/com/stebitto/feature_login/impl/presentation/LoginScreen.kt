@@ -1,27 +1,24 @@
 package com.stebitto.feature_login.impl.presentation
 
+import android.app.Activity
 import android.content.res.Configuration
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,10 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.firebase.auth.FirebaseAuth
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_login.R
 import org.koin.androidx.compose.koinViewModel
@@ -47,100 +45,101 @@ internal fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
     onNavigateBack: () -> Unit = {}
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    val error by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
+    val uiState = loginViewmodel.state.collectAsState()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = FirebaseAuthUIActivityResultContract(),
+        onResult = { res ->
+            val response = res.idpResponse
+            if (res.resultCode == Activity.RESULT_OK) {
+                // User is signed in.
+                val user = FirebaseAuth.getInstance().currentUser
+                loginViewmodel.dispatch(LoginIntent.LoginSuccess)
+                onLoginSuccess()
+            } else {
+                loginViewmodel.dispatch(LoginIntent.LoginFailed(response?.error?.message))
+            }
+        }
+    )
+
+    val githubProvider = AuthUI.IdpConfig.GitHubBuilder()
+        .setCustomParameters(mapOf("allow_signup" to "false"))
+        .build()
+
+    val signInIntent = AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setAvailableProviders(listOf(githubProvider))
+        .build()
 
     LoginCard(
-        username = username,
-        password = password,
-        error = error,
-        isLoading = isLoading,
-        onUsernameChange = { username = it },
-        onPasswordChange = { password = it },
-        onLoginClick = { isLoading = true }
+        isLoading = uiState.value.isLoading,
+        errorMessage = uiState.value.errorMessage,
+        onLoginClick = {
+            loginViewmodel.dispatch(LoginIntent.LoginButtonClicked)
+            launcher.launch(signInIntent)
+        }
     )
 }
 
 @Composable
 internal fun LoginCard(
-    username: String,
-    password: String,
-    error: String,
     isLoading: Boolean,
-    onUsernameChange: (String) -> Unit = {},
-    onPasswordChange: (String) -> Unit = {},
+    errorMessage: String?,
     onLoginClick: () -> Unit = {}
 ) {
-    Card(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxWidth()
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        Column(
+        Card(
             modifier = Modifier
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth(0.7f)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.github_logo),
-                contentDescription = stringResource(R.string.github_logo_content_description),
+            Column(
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(100.dp),
-                contentScale = ContentScale.Fit
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedTextField(
-                value = username,
-                onValueChange = { onUsernameChange(it) },
-                label = { Text(stringResource(R.string.username_label)) },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { onPasswordChange(it) },
-                label = { Text(stringResource(R.string.password_label)) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (error.isNotEmpty()) {
-                Text(
-                    text = error,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .testTag(TEST_ERROR_MESSAGE)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.testTag(TEST_LOADING_INDICATOR)
+                Image(
+                    painter = painterResource(id = R.drawable.github_logo),
+                    contentDescription = stringResource(R.string.github_logo_content_description),
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                if (!errorMessage.isNullOrBlank()) {
+                    Text(
+                        text = errorMessage,
+                        color = Color.Red,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .testTag(TEST_ERROR_MESSAGE)
                     )
-                } else {
-                    Button(
-                        onClick = { onLoginClick() },
-                        modifier = Modifier.testTag(TEST_BUTTON_LOGIN)
-                    ) {
-                        Text(stringResource(R.string.login_button_text))
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.testTag(TEST_LOADING_INDICATOR)
+                        )
+                    } else {
+                        Button(
+                            onClick = { onLoginClick() },
+                            modifier = Modifier.testTag(TEST_BUTTON_LOGIN)
+                        ) {
+                            Text(stringResource(R.string.login_button_text))
+                        }
                     }
                 }
             }
@@ -157,6 +156,6 @@ internal fun LoginCard(
 @Composable
 internal fun LoginCardPreview() {
     MyApplicationTheme {
-        LoginCard(username = "", password = "", error = "", isLoading = false)
+        LoginCard(isLoading = false, errorMessage = null)
     }
 }
