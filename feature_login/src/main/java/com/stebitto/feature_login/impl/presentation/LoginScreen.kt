@@ -3,7 +3,9 @@ package com.stebitto.feature_login.impl.presentation
 import android.app.Activity
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -88,12 +93,17 @@ internal fun LoginCard(
     onLoginClick: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
+            colors = CardDefaults.cardColors(
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
+            modifier = Modifier.fillMaxWidth(0.7f)
         ) {
             Column(
                 modifier = Modifier
@@ -136,6 +146,9 @@ internal fun LoginCard(
                     } else {
                         Button(
                             onClick = { onLoginClick() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onBackground,
+                            ),
                             modifier = Modifier.testTag(TEST_BUTTON_LOGIN)
                         ) {
                             Text(stringResource(R.string.login_button_text))
