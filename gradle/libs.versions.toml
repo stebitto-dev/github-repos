@@ -19,6 +19,8 @@ turbineVersion = "1.1.0"
 gmsVersion = "4.4.2"
 firebaseBomVersion = "33.4.0"
 firebaseUIVersion = "8.0.2"
+retrofitVersion = "2.9.0"
+retrofitLoggingVersion = "4.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +44,10 @@ compose-activity = { module = "androidx.activity:activity-compose", version.ref 
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigationVerson" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUiToolingVersion" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion" }
+retrofit-gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofitVersion" }
+retrofit-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "retrofitLoggingVersion" }
 
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCoreVersion" }
 mockito-kolin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlinVersion"}
