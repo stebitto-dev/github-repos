@@ -18,7 +18,7 @@ class LoginScreenTest {
     @Test
     fun test_showLoading() {
         composeTestRule.setContent {
-            LoginCard(username = "", password = "", error = "", isLoading = true)
+            LoginCard(isLoading = true, errorMessage = null)
         }
         composeTestRule.onNodeWithTag(TEST_LOADING_INDICATOR).assertIsDisplayed()
     }
@@ -26,7 +26,7 @@ class LoginScreenTest {
     @Test
     fun test_showError() {
         composeTestRule.setContent {
-            LoginCard(username = "", password = "", error = "Error message", isLoading = false)
+            LoginCard(isLoading = false, errorMessage = "Error message")
         }
         composeTestRule.onNodeWithTag(TEST_ERROR_MESSAGE).assertIsDisplayed()
     }
@@ -34,7 +34,7 @@ class LoginScreenTest {
     @Test
     fun test_showLoginButton() {
         composeTestRule.setContent {
-            LoginCard(username = "", password = "", error = "", isLoading = false)
+            LoginCard(isLoading = false, errorMessage = null)
         }
         composeTestRule.onNodeWithTag(TEST_BUTTON_LOGIN).assertIsDisplayed()
     }

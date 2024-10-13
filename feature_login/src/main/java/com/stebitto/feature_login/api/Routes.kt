@@ -9,13 +9,11 @@ enum class LoginRoutes {
 }
 
 fun NavGraphBuilder.loginRoutes(
-    onLoginSuccess: () -> Unit,
-    onNavigateBack: () -> Unit
+    onLoginSuccess: () -> Unit
 ) {
     composable(LoginRoutes.LOGIN.name) {
         LoginScreen(
-            onLoginSuccess = onLoginSuccess,
-            onNavigateBack = onNavigateBack
+            onLoginSuccess = onLoginSuccess
         )
     }
 }

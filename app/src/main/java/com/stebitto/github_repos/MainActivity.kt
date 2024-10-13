@@ -28,8 +28,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         loginRoutes(
-                            onLoginSuccess = {},
-                            onNavigateBack = { navController.popBackStack() }
+                            onLoginSuccess = {}
                         )
                     }
                 }

@@ -26,16 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.google.firebase.auth.FirebaseAuth
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_login.R
 import org.koin.androidx.compose.koinViewModel
@@ -47,8 +46,7 @@ const val TEST_BUTTON_LOGIN = "TEST_BUTTON_LOGIN"
 @Composable
 internal fun LoginScreen(
     loginViewmodel: LoginViewModel = koinViewModel(),
-    onLoginSuccess: () -> Unit = {},
-    onNavigateBack: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {}
 ) {
     val uiState = loginViewmodel.state.collectAsState()
 
@@ -57,11 +55,11 @@ internal fun LoginScreen(
         onResult = { res ->
             val response = res.idpResponse
             if (res.resultCode == Activity.RESULT_OK) {
-                // User is signed in.
-                val user = FirebaseAuth.getInstance().currentUser
+                // Login successful
                 loginViewmodel.dispatch(LoginIntent.LoginSuccess)
                 onLoginSuccess()
             } else {
+                // Login failed
                 loginViewmodel.dispatch(LoginIntent.LoginFailed(response?.error?.message))
             }
         }
@@ -94,13 +92,13 @@ internal fun LoginCard(
 ) {
     Box(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Card(
             colors = CardDefaults.cardColors(
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                containerColor = MaterialTheme.colorScheme.inversePrimary
             ),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
             modifier = Modifier.fillMaxWidth(0.7f)
@@ -125,10 +123,10 @@ internal fun LoginCard(
                 if (!errorMessage.isNullOrBlank()) {
                     Text(
                         text = errorMessage,
-                        color = Color.Red,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(top = 8.dp)
-                            .align(Alignment.CenterHorizontally)
                             .testTag(TEST_ERROR_MESSAGE)
                     )
 

@@ -1,8 +1,5 @@
 package com.stebitto.feature_login
 
-import app.cash.turbine.test
-import com.stebitto.common.api.models.LoginDTO
-import com.stebitto.feature_login.api.data.GithubLoginUseCase
 import com.stebitto.feature_login.impl.presentation.LoginIntent
 import com.stebitto.feature_login.impl.presentation.LoginState
 import com.stebitto.feature_login.impl.presentation.LoginViewModel
@@ -16,17 +13,11 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-
-    @Mock
-    private lateinit var loginUseCase: GithubLoginUseCase
 
     private lateinit var loginViewModel: LoginViewModel
 
@@ -35,9 +26,8 @@ class LoginViewModelTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)
-        loginViewModel = LoginViewModel(loginUseCase, initialState)
+        loginViewModel = LoginViewModel(initialState)
     }
 
     @After
@@ -51,37 +41,23 @@ class LoginViewModelTest {
     }
 
     @Test
+    fun `login loading`() = runTest {
+        loginViewModel.dispatch(LoginIntent.LoginButtonClicked)
+        assertEquals(loadingState, loginViewModel.state.value)
+    }
+
+    @Test
     fun `login success`() = runTest {
-        val username = "testuser"
-        val password = "password"
-        val resultSuccess = Result.success(LoginDTO(true))
         val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
-
-        Mockito.`when`(loginUseCase(username, password)).thenReturn(resultSuccess)
-
-        loginViewModel.state.test {
-            assertEquals(initialState, awaitItem())
-            loginViewModel.dispatch(LoginIntent.Login(username, password))
-            assertEquals(loadingState, awaitItem())
-            assertEquals(stateSuccess, awaitItem())
-        }
+        loginViewModel.dispatch(LoginIntent.LoginSuccess)
+        assertEquals(stateSuccess, loginViewModel.state.value)
     }
 
     @Test
     fun `login failure`() = runTest {
-        val username = "testuser"
-        val password = "wrongpassword"
         val errorMessage = "Login failed"
-        val resultFailure = Result.failure<LoginDTO>(Exception(errorMessage))
         val stateFailure = LoginState(isLoading = false, isLoggedIn = false, errorMessage = errorMessage)
-
-        Mockito.`when`(loginUseCase(username, password)).thenReturn(resultFailure)
-
-        loginViewModel.state.test {
-            assertEquals(initialState, awaitItem())
-            loginViewModel.dispatch(LoginIntent.Login(username, password))
-            assertEquals(loadingState, awaitItem())
-            assertEquals(stateFailure, awaitItem())
-        }
+        loginViewModel.dispatch(LoginIntent.LoginFailed(errorMessage))
+        assertEquals(stateFailure, loginViewModel.state.value)
     }
 }
