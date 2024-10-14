@@ -3,7 +3,7 @@ package com.stebitto.feature_user_repos.impl.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stebitto.common.api.MVIViewModel
-import com.stebitto.feature_user_repos.api.GithubUserRepoUseCase
+import com.stebitto.feature_user_repos.api.GetGithubUserRepoUseCase
 import com.stebitto.feature_user_repos.impl.models.toPresentationModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class UserRepoViewModel(
-    private val githubUserRepoUseCase: GithubUserRepoUseCase,
+    private val getGithubUserRepoUseCase: GetGithubUserRepoUseCase,
     initialState: UserRepoState = UserRepoState()
 ) : MVIViewModel<UserRepoState, UserRepoIntent>, ViewModel() {
 
@@ -30,7 +30,7 @@ internal class UserRepoViewModel(
 
     private suspend fun fetchUserRepositories() {
         _state.update { it.copy(isLoading = true) }
-        githubUserRepoUseCase()
+        getGithubUserRepoUseCase()
             .onSuccess { repos ->
                 val reposPresentationModel = repos.map { it.toPresentationModel() }
                 _state.update {

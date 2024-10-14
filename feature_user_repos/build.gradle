@@ -70,8 +70,10 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kolin)
 
-    // turbine
-    testImplementation(libs.turbine)
+    // room
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.ktx)
 
     testImplementation libs.junit
     testImplementation libs.kotlin.coroutine.test

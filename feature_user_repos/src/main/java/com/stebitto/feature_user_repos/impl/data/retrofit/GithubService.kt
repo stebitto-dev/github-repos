@@ -1,4 +1,4 @@
-package com.stebitto.feature_user_repos.impl.data
+package com.stebitto.feature_user_repos.impl.data.retrofit
 
 import com.stebitto.feature_user_repos.impl.models.UserRepoRemote
 import retrofit2.http.GET

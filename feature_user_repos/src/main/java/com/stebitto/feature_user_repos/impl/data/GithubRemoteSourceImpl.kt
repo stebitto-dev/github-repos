@@ -1,5 +1,6 @@
 package com.stebitto.feature_user_repos.impl.data
 
+import com.stebitto.feature_user_repos.impl.data.retrofit.GitHubService
 import com.stebitto.feature_user_repos.impl.models.UserRepoRemote
 
 internal class GithubRemoteSourceImpl(private val githubService: GitHubService) : GithubRemoteSource {

@@ -1,13 +1,19 @@
 package com.stebitto.feature_user_repos.api
 
-import com.stebitto.feature_user_repos.impl.data.GitHubService
+import android.app.Application
+import androidx.room.Room
+import com.stebitto.feature_user_repos.impl.data.retrofit.GitHubService
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSource
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSourceImpl
 import com.stebitto.feature_user_repos.impl.data.GithubRepositoryImpl
-import com.stebitto.feature_user_repos.impl.data.GithubUserRepoUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.GetGithubUserRepoUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.GithubLocalSource
+import com.stebitto.feature_user_repos.impl.data.GithubLocalSourceImpl
+import com.stebitto.feature_user_repos.impl.data.room.AppDatabase
 import com.stebitto.feature_user_repos.impl.presentation.UserRepoViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -21,12 +27,19 @@ val networkModule = module {
     single { provideService(get()) }
 }
 
+val localDbModule = module {
+    single { provideDatabase(androidApplication()) }
+    single { provideDao(get()) }
+}
+
 val featureUserReposModule = module {
     viewModel { UserRepoViewModel(get()) }
-    factory<GithubUserRepoUseCase> { GithubUserRepoUseCaseImpl(get(), get()) }
+    factory<GetGithubUserRepoUseCase> { GetGithubUserRepoUseCaseImpl(get(), get()) }
     factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
-    single <GithubRepository> { GithubRepositoryImpl(get()) }
+    factory<GithubLocalSource> { GithubLocalSourceImpl(get()) }
+    single <GithubRepository> { GithubRepositoryImpl(get(), get()) }
     includes(networkModule)
+    includes(localDbModule)
 }
 
 internal fun provideHttpClient(): OkHttpClient {
@@ -56,3 +69,13 @@ internal fun provideRetrofit(
 
 internal fun provideService(retrofit: Retrofit): GitHubService =
     retrofit.create(GitHubService::class.java)
+
+internal fun provideDatabase(application: Application): AppDatabase {
+    return Room.databaseBuilder(
+        application,
+        AppDatabase::class.java,
+        "app_database"
+    ).build()
+}
+
+internal fun provideDao(database: AppDatabase) = database.userRepoDao()

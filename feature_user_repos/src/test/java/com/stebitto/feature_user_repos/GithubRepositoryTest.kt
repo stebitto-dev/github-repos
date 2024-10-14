@@ -1,6 +1,7 @@
 package com.stebitto.feature_user_repos
 
 import com.stebitto.common.api.MainDispatcherRule
+import com.stebitto.feature_user_repos.impl.data.GithubLocalSource
 import com.stebitto.feature_user_repos.impl.data.GithubRepositoryImpl
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSource
 import kotlinx.coroutines.test.runTest
@@ -18,13 +19,15 @@ class GithubRepositoryTest {
 
     @Mock
     private lateinit var githubRemoteSource: GithubRemoteSource
+    @Mock
+    private lateinit var githubLocalSource: GithubLocalSource
 
     private lateinit var githubRepository: GithubRepositoryImpl
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        githubRepository = GithubRepositoryImpl(githubRemoteSource)
+        githubRepository = GithubRepositoryImpl(githubRemoteSource, githubLocalSource)
     }
 
     @Test

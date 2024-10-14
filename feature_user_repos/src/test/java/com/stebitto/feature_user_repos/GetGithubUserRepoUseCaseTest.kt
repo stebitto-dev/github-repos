@@ -3,7 +3,7 @@ package com.stebitto.feature_user_repos
 import com.stebitto.common.api.MainDispatcherRule
 import com.stebitto.feature_user_repos.api.GithubRepository
 import com.stebitto.common.api.GetGithubTokenUseCase
-import com.stebitto.feature_user_repos.impl.data.GithubUserRepoUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.GetGithubUserRepoUseCaseImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -12,7 +12,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
-class GithubUserRepoUseCaseTest {
+class GetGithubUserRepoUseCaseTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -22,12 +22,12 @@ class GithubUserRepoUseCaseTest {
     @Mock
     private lateinit var getGithubTokenUseCase: GetGithubTokenUseCase
 
-    private lateinit var githubUserRepoUseCase: GithubUserRepoUseCaseImpl
+    private lateinit var githubUserRepoUseCase: GetGithubUserRepoUseCaseImpl
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        githubUserRepoUseCase = GithubUserRepoUseCaseImpl(githubRepository, getGithubTokenUseCase)
+        githubUserRepoUseCase = GetGithubUserRepoUseCaseImpl(githubRepository, getGithubTokenUseCase)
     }
 
     @Test
