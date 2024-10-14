@@ -4,6 +4,7 @@ import com.stebitto.feature_user_repos.impl.data.GitHubService
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSource
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSourceImpl
 import com.stebitto.feature_user_repos.impl.data.GithubRepositoryImpl
+import com.stebitto.feature_user_repos.impl.data.GithubUserRepoUseCaseImpl
 import com.stebitto.feature_user_repos.impl.presentation.UserRepoViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,18 +14,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-val featureUserReposModule = module {
-    viewModel { UserRepoViewModel(get()) }
-    factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
-    single <GithubRepository> { GithubRepositoryImpl(get()) }
-    includes(networkModule)
-}
-
 val networkModule = module {
     single { provideHttpClient() }
     single { provideConverterFactory() }
     single { provideRetrofit(get(), get()) }
     single { provideService(get()) }
+}
+
+val featureUserReposModule = module {
+    viewModel { UserRepoViewModel(get()) }
+    factory<GithubUserRepoUseCase> { GithubUserRepoUseCaseImpl(get(), get()) }
+    factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
+    single <GithubRepository> { GithubRepositoryImpl(get()) }
+    includes(networkModule)
 }
 
 internal fun provideHttpClient(): OkHttpClient {

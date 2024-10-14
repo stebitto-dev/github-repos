@@ -1,8 +1,9 @@
 package com.stebitto.github_repos
 
 import android.app.Application
-import com.stebitto.common.api.commonModule
+import com.stebitto.common.commonModule
 import com.stebitto.feature_login.api.featureLoginModule
+import com.stebitto.feature_user_repos.api.featureUserReposModule
 import com.stebitto.github_repos.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -16,7 +17,7 @@ class MainApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@MainApplication)
-            modules(appModule, featureLoginModule, commonModule)
+            modules(appModule, featureLoginModule, featureUserReposModule, commonModule)
         }
     }
 }

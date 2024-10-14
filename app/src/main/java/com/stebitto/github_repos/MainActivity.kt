@@ -8,9 +8,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_login.api.LoginRoutes
 import com.stebitto.feature_login.api.loginRoutes
+import com.stebitto.feature_user_repos.api.UserReposRoutes
+import com.stebitto.feature_user_repos.api.userReposRoutes
 
 class MainActivity : ComponentActivity() {
 
@@ -22,14 +25,17 @@ class MainActivity : ComponentActivity() {
                 Scaffold { innerPadding ->
                     val navController = rememberNavController()
 
+                    val isUserLoggedIn = FirebaseAuth.getInstance().currentUser != null
+
                     NavHost(
                         navController = navController,
-                        startDestination = LoginRoutes.LOGIN.name,
+                        startDestination = if (isUserLoggedIn) UserReposRoutes.LIST.name else LoginRoutes.LOGIN.name,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         loginRoutes(
-                            onLoginSuccess = {}
+                            onLoginSuccess = { navController.navigate(UserReposRoutes.LIST.name) }
                         )
+                        userReposRoutes()
                     }
                 }
             }
