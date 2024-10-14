@@ -23,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,14 +51,21 @@ internal fun LoginScreen(
 ) {
     val uiState = loginViewmodel.state.collectAsState()
 
+    LaunchedEffect(uiState.value.isLoggedIn) {
+        if (uiState.value.isLoggedIn) {
+            onLoginSuccess()
+        }
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = FirebaseAuthUIActivityResultContract(),
         onResult = { res ->
             val response = res.idpResponse
             if (res.resultCode == Activity.RESULT_OK) {
                 // Login successful
-                loginViewmodel.dispatch(LoginIntent.LoginSuccess)
-                onLoginSuccess()
+                response?.idpToken?.let { token ->
+                    loginViewmodel.dispatch(LoginIntent.LoginSuccess(token))
+                }
             } else {
                 // Login failed
                 loginViewmodel.dispatch(LoginIntent.LoginFailed(response?.error?.message))
@@ -67,6 +75,7 @@ internal fun LoginScreen(
 
     val githubProvider = AuthUI.IdpConfig.GitHubBuilder()
         .setCustomParameters(mapOf("allow_signup" to "false"))
+        .setScopes(listOf("repo"))
         .build()
 
     val signInIntent = AuthUI.getInstance()

@@ -2,7 +2,7 @@ package com.stebitto.feature_user_repos
 
 import com.stebitto.common.api.MainDispatcherRule
 import com.stebitto.feature_user_repos.api.GithubRepository
-import com.stebitto.feature_user_repos.impl.data.GetGithubTokenUseCase
+import com.stebitto.common.api.GetGithubTokenUseCase
 import com.stebitto.feature_user_repos.impl.data.GithubUserRepoUseCaseImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

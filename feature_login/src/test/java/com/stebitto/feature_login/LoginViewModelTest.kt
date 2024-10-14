@@ -1,23 +1,26 @@
 package com.stebitto.feature_login
 
+import com.stebitto.common.api.MainDispatcherRule
+import com.stebitto.common.api.SaveGithubTokenUseCase
 import com.stebitto.feature_login.impl.presentation.LoginIntent
 import com.stebitto.feature_login.impl.presentation.LoginState
 import com.stebitto.feature_login.impl.presentation.LoginViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
 
-    private val testDispatcher = StandardTestDispatcher()
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @Mock
+    private lateinit var saveGithubTokenUseCase: SaveGithubTokenUseCase
 
     private lateinit var loginViewModel: LoginViewModel
 
@@ -26,13 +29,8 @@ class LoginViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher)
-        loginViewModel = LoginViewModel(initialState)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        MockitoAnnotations.openMocks(this)
+        loginViewModel = LoginViewModel(saveGithubTokenUseCase, initialState)
     }
 
     @Test
@@ -49,7 +47,10 @@ class LoginViewModelTest {
     @Test
     fun `login success`() = runTest {
         val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
-        loginViewModel.dispatch(LoginIntent.LoginSuccess)
+
+        Mockito.`when`(saveGithubTokenUseCase("")).thenReturn(Unit)
+
+        loginViewModel.dispatch(LoginIntent.LoginSuccess(""))
         assertEquals(stateSuccess, loginViewModel.state.value)
     }
 

@@ -1,5 +1,6 @@
 package com.stebitto.feature_user_repos.impl.data
 
+import com.stebitto.common.api.GetGithubTokenUseCase
 import com.stebitto.common.api.models.UserRepoDTO
 import com.stebitto.feature_user_repos.api.GithubRepository
 import com.stebitto.feature_user_repos.api.GithubUserRepoUseCase
