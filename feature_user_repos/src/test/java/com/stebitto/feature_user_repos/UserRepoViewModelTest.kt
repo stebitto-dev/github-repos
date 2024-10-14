@@ -1,9 +1,7 @@
 package com.stebitto.feature_user_repos
 
 import com.stebitto.common.api.MainDispatcherRule
-import com.stebitto.common.api.models.UserRepoDTO
 import com.stebitto.feature_user_repos.api.GetGithubUserRepoUseCase
-import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
 import com.stebitto.feature_user_repos.impl.presentation.UserRepoIntent
 import com.stebitto.feature_user_repos.impl.presentation.UserRepoState
 import com.stebitto.feature_user_repos.impl.presentation.UserRepoViewModel
@@ -26,16 +24,6 @@ class UserRepoViewModelTest {
 
     private lateinit var viewModel: UserRepoViewModel
     private val initialState = UserRepoState()
-
-    private val fakeReposDTO = listOf(
-        UserRepoDTO(1, "Repo 1", "Description 1", "Kotlin", 2),
-        UserRepoDTO(2, "Repo 2", "Description 2", "Java", 1)
-    )
-
-    private val fakeReposPresentation = listOf(
-        UserRepoPresentation(1, "Repo 1", "Description 1", "Kotlin", 2),
-        UserRepoPresentation(2, "Repo 2", "Description 2", "Java", 1)
-    )
 
     @Before
     fun setup() {
