@@ -39,9 +39,9 @@ import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_login.R
 import org.koin.androidx.compose.koinViewModel
 
-const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
-const val TEST_LOADING_INDICATOR = "TEST_LOADING_INDICATOR"
-const val TEST_BUTTON_LOGIN = "TEST_BUTTON_LOGIN"
+internal const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
+internal const val TEST_LOADING_INDICATOR = "TEST_LOADING_INDICATOR"
+internal const val TEST_BUTTON_LOGIN = "TEST_BUTTON_LOGIN"
 
 @Composable
 internal fun LoginScreen(

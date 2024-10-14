@@ -28,13 +28,13 @@ class UserRepoViewModelTest {
     private val initialState = UserRepoState()
 
     private val fakeReposDTO = listOf(
-        UserRepoDTO("Repo 1", "Description 1", "Kotlin", 2),
-        UserRepoDTO("Repo 2", "Description 2", "Java", 1)
+        UserRepoDTO(1, "Repo 1", "Description 1", "Kotlin", 2),
+        UserRepoDTO(2, "Repo 2", "Description 2", "Java", 1)
     )
 
     private val fakeReposPresentation = listOf(
-        UserRepoPresentation("Repo 1", "Description 1", "Kotlin", 2),
-        UserRepoPresentation("Repo 2", "Description 2", "Java", 1)
+        UserRepoPresentation(1, "Repo 1", "Description 1", "Kotlin", 2),
+        UserRepoPresentation(2, "Repo 2", "Description 2", "Java", 1)
     )
 
     @Before

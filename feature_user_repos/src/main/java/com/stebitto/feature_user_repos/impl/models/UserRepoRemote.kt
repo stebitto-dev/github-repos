@@ -3,6 +3,7 @@ package com.stebitto.feature_user_repos.impl.models
 import com.stebitto.common.api.models.UserRepoDTO
 
 internal data class UserRepoRemote(
+    val id: Int?,
     val name: String?,
     val description: String?,
     val language: String?,
@@ -10,6 +11,7 @@ internal data class UserRepoRemote(
 ) {
     fun toUserRepoDTO(): UserRepoDTO {
         return UserRepoDTO(
+            id = id ?: -1,
             name = name ?: "",
             description = description ?: "",
             language = language ?: "",
