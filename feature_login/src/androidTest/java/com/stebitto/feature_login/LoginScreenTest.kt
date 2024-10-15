@@ -3,10 +3,10 @@ package com.stebitto.feature_login
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import com.stebitto.feature_login.impl.presentation.LoginCard
-import com.stebitto.feature_login.impl.presentation.TEST_BUTTON_LOGIN
-import com.stebitto.feature_login.impl.presentation.TEST_ERROR_MESSAGE
-import com.stebitto.feature_login.impl.presentation.TEST_LOADING_INDICATOR
+import com.stebitto.feature_login.impl.LoginCard
+import com.stebitto.feature_login.impl.TEST_BUTTON_LOGIN
+import com.stebitto.feature_login.impl.TEST_ERROR_MESSAGE
+import com.stebitto.feature_login.impl.TEST_LOADING_INDICATOR
 import org.junit.Rule
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.stebitto.feature_login.impl.presentation
+package com.stebitto.feature_login.impl
 
 import com.stebitto.common.api.State
 

@@ -2,11 +2,13 @@ package com.stebitto.feature_user_repos.api
 
 import android.app.Application
 import androidx.room.Room
+import com.stebitto.common.api.AuthorizationInterceptor
+import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCase
 import com.stebitto.feature_user_repos.impl.data.retrofit.GitHubService
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSource
 import com.stebitto.feature_user_repos.impl.data.GithubRemoteSourceImpl
 import com.stebitto.feature_user_repos.impl.data.GithubRepositoryImpl
-import com.stebitto.feature_user_repos.impl.data.GetGithubUserRepoUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCaseImpl
 import com.stebitto.feature_user_repos.impl.data.GithubLocalSource
 import com.stebitto.feature_user_repos.impl.data.GithubLocalSourceImpl
 import com.stebitto.feature_user_repos.impl.data.room.AppDatabase
@@ -22,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val networkModule = module {
-    single { provideHttpClient() }
+    single { provideHttpClient(AuthorizationInterceptor(get())) }
     single { provideConverterFactory() }
     single { provideRetrofit(get(), get()) }
     single { provideService(get()) }
@@ -36,15 +38,17 @@ val localDbModule = module {
 val featureUserReposModule = module {
     viewModel { UserRepoViewModel(get()) }
     viewModel { UserRepoDetailViewModel(get()) }
-    factory<GetGithubUserRepoUseCase> { GetGithubUserRepoUseCaseImpl(get(), get()) }
+    factory<GetGithubUserRepoListUseCase> { GetGithubUserRepoListUseCaseImpl(get()) }
     factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
     factory<GithubLocalSource> { GithubLocalSourceImpl(get()) }
-    single <GithubRepository> { GithubRepositoryImpl(get(), get()) }
+    single<GithubRepository> { GithubRepositoryImpl(get(), get()) }
     includes(networkModule)
     includes(localDbModule)
 }
 
-internal fun provideHttpClient(): OkHttpClient {
+internal fun provideHttpClient(
+    authorizationInterceptor: AuthorizationInterceptor
+): OkHttpClient {
     return OkHttpClient
         .Builder()
         .readTimeout(60, TimeUnit.SECONDS)
@@ -52,6 +56,7 @@ internal fun provideHttpClient(): OkHttpClient {
         .addInterceptor(
             HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
         )
+        .addInterceptor(authorizationInterceptor)
         .build()
 }
 

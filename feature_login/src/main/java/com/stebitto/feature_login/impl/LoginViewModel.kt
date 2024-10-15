@@ -1,9 +1,9 @@
-package com.stebitto.feature_login.impl.presentation
+package com.stebitto.feature_login.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stebitto.common.api.MVIViewModel
-import com.stebitto.common.api.SaveGithubTokenUseCase
+import com.stebitto.common.api.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class LoginViewModel(
-    private val saveGithubTokenUseCase: SaveGithubTokenUseCase,
+    private val userRepository: UserRepository,
     initialState: LoginState = LoginState()
 ) : MVIViewModel<LoginState, LoginIntent>, ViewModel() {
 
@@ -25,7 +25,11 @@ internal class LoginViewModel(
                 it.copy(isLoading = true, errorMessage = null)
             }
             is LoginIntent.LoginSuccess -> {
-                viewModelScope.launch { saveGithubTokenUseCase(intent.accessToken) }
+                viewModelScope.launch {
+                    userRepository.saveGithubToken(intent.accessToken)
+                    userRepository.saveUserName(intent.username)
+                }
+
                 _state.update {
                     LoginState(
                         isLoading = false,

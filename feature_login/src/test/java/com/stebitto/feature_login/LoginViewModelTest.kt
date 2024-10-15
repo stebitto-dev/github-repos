@@ -1,10 +1,10 @@
 package com.stebitto.feature_login
 
 import com.stebitto.common.api.MainDispatcherRule
-import com.stebitto.common.api.SaveGithubTokenUseCase
-import com.stebitto.feature_login.impl.presentation.LoginIntent
-import com.stebitto.feature_login.impl.presentation.LoginState
-import com.stebitto.feature_login.impl.presentation.LoginViewModel
+import com.stebitto.common.api.UserRepository
+import com.stebitto.feature_login.impl.LoginIntent
+import com.stebitto.feature_login.impl.LoginState
+import com.stebitto.feature_login.impl.LoginViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -20,7 +20,7 @@ class LoginViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Mock
-    private lateinit var saveGithubTokenUseCase: SaveGithubTokenUseCase
+    private lateinit var userRepository: UserRepository
 
     private lateinit var loginViewModel: LoginViewModel
 
@@ -30,7 +30,7 @@ class LoginViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        loginViewModel = LoginViewModel(saveGithubTokenUseCase, initialState)
+        loginViewModel = LoginViewModel(userRepository, initialState)
     }
 
     @Test
@@ -47,10 +47,11 @@ class LoginViewModelTest {
     @Test
     fun `login success`() = runTest {
         val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
-        loginViewModel.dispatch(LoginIntent.LoginSuccess(""))
+        loginViewModel.dispatch(LoginIntent.LoginSuccess("", ""))
         assertEquals(stateSuccess, loginViewModel.state.value)
         // Verify that the saveGithubTokenUseCase was called with the correct token
-        verify(saveGithubTokenUseCase).invoke("")
+        verify(userRepository).saveGithubToken("")
+        verify(userRepository).saveUserName("")
     }
 
     @Test
