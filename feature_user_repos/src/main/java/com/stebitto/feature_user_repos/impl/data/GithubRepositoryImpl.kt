@@ -9,7 +9,7 @@ internal class GithubRepositoryImpl(
     private val githubLocalSource: GithubLocalSource
 ) : GithubRepository {
 
-    override suspend fun getUserRepos(): Result<List<UserRepoDTO>> {
+    override suspend fun getUserRepos(): Result<List<UserRepoDTO>> = runCatching {
         try {
             val response = githubRemoteSource.getUserRepos()
             return Result.success(
@@ -24,7 +24,7 @@ internal class GithubRepositoryImpl(
         }
     }
 
-    override suspend fun getUserRepoByName(owner: String, name: String): Result<UserRepoDTO?> {
+    override suspend fun getUserRepoByName(owner: String, name: String): Result<UserRepoDTO?> = runCatching {
         try {
             val response = githubRemoteSource.getRepo(owner, name)
             return Result.success(response.toUserRepoDTO())

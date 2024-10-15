@@ -32,56 +32,100 @@ class GithubRepositoryTest {
     }
 
     @Test
-    fun `getUserRepos should return success result with empty list`() = runTest {
-        Mockito.`when`(githubRemoteSource.getUserRepos("")).thenReturn(emptyList())
-        val result = githubRepository.getUserRepos("")
+    fun `getUserRepos should return success result with remote empty list`() = runTest {
+        Mockito.`when`(githubRemoteSource.getUserRepos()).thenReturn(emptyList())
+        val result = githubRepository.getUserRepos()
         assert(result.isSuccess)
         assert(result.getOrNull()?.isEmpty() == true)
     }
 
     @Test
-    fun `getUserRepos should return success result with non-empty list`() = runTest {
-        Mockito.`when`(githubRemoteSource.getUserRepos("")).thenReturn(fakeReposRemote)
-        val result = githubRepository.getUserRepos("")
+    fun `getUserRepos should return success result with remote non-empty list`() = runTest {
+        Mockito.`when`(githubRemoteSource.getUserRepos()).thenReturn(fakeReposRemote)
+        val result = githubRepository.getUserRepos()
         assert(result.isSuccess)
         assertEquals(result.getOrNull(), fakeReposDTO)
     }
 
     @Test
-    fun `getUserRepos should return success result with filtered list`() = runTest {
-        Mockito.`when`(githubRemoteSource.getUserRepos("")).thenReturn(fakeReposRemoteWithNullId)
-        val result = githubRepository.getUserRepos("")
+    fun `getUserRepos should return success result with remote filtered list`() = runTest {
+        Mockito.`when`(githubRemoteSource.getUserRepos()).thenReturn(fakeReposRemoteWithNullId)
+        val result = githubRepository.getUserRepos()
         assert(result.isSuccess)
         assertEquals(result.getOrNull(), fakeReposDTO)
+    }
+
+    @Test
+    fun `getUserRepos should return success result with local list`() = runTest {
+        Mockito.`when`(githubRemoteSource.getUserRepos()).thenThrow(RuntimeException())
+        Mockito.`when`(githubLocalSource.getUserRepos()).thenReturn(fakeReposDBEntity)
+        val result = githubRepository.getUserRepos()
+        assert(result.isSuccess)
+        assertEquals(result.getOrNull(), fakeReposDTO)
+    }
+
+    @Test
+    fun `getUserRepos should return success result with local empty list`() = runTest {
+        Mockito.`when`(githubRemoteSource.getUserRepos()).thenThrow(RuntimeException())
+        Mockito.`when`(githubLocalSource.getUserRepos()).thenReturn(emptyList())
+        val result = githubRepository.getUserRepos()
+        assert(result.isSuccess)
+        assert(result.getOrNull()?.isEmpty() == true)
     }
 
     @Test
     fun `getUserRepos should return failure result`() = runTest {
-        Mockito.`when`(githubRemoteSource.getUserRepos("")).thenThrow(RuntimeException())
-        val result = githubRepository.getUserRepos("")
+        Mockito.`when`(githubRemoteSource.getUserRepos()).thenThrow(RuntimeException())
+        Mockito.`when`(githubLocalSource.getUserRepos()).thenThrow(RuntimeException())
+        val result = githubRepository.getUserRepos()
         assert(result.isFailure)
     }
 
     @Test
-    fun `getUserRepoById should return success result with null value`() = runTest {
-        Mockito.`when`(githubLocalSource.getUserRepoById(1)).thenReturn(null)
-        val result = githubRepository.getUserRepoById(1)
-        assert(result.isSuccess)
-        assertEquals(result.getOrNull(), null)
-    }
-
-    @Test
-    fun `getUserRepoById should return success result with non-null value`() = runTest {
-        Mockito.`when`(githubLocalSource.getUserRepoById(1)).thenReturn(userRepoDBEntity1)
-        val result = githubRepository.getUserRepoById(1)
+    fun `getUserRepoByName should return success result with remote`() = runTest {
+        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenReturn(userRepoRemote1)
+        val result = githubRepository.getUserRepoByName("", "")
         assert(result.isSuccess)
         assertEquals(result.getOrNull(), userRepoDTO1)
     }
 
     @Test
-    fun `getUserRepoById should return failure result`() = runTest {
-        Mockito.`when`(githubLocalSource.getUserRepoById(1)).thenThrow(RuntimeException())
-        val result = githubRepository.getUserRepoById(1)
+    fun `getUserRepoByName should return success result with local`() = runTest {
+        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
+        Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenReturn(userRepoDBEntity1)
+        val result = githubRepository.getUserRepoByName("", "")
+        assert(result.isSuccess)
+        assertEquals(result.getOrNull(), userRepoDTO1)
+    }
+
+    @Test
+    fun `getUserRepoByName should return failure result with local null value`() = runTest {
+        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
+        Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenReturn(null)
+        val result = githubRepository.getUserRepoByName("", "")
+        assert(result.isSuccess)
+        assert(result.getOrNull() == null)
+    }
+
+    @Test
+    fun `getUserRepoByName should return failure result`() = runTest {
+        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
+        Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenThrow(RuntimeException())
+        val result = githubRepository.getUserRepoByName("", "")
+        assert(result.isFailure)
+    }
+
+    @Test
+    fun `starRepo should return success result`() = runTest {
+        Mockito.`when`(githubRemoteSource.starRepo("", "")).thenReturn(Unit)
+        val result = githubRepository.starRepo("", "")
+        assert(result.isSuccess)
+    }
+
+    @Test
+    fun `starRepo should return failure result`() = runTest {
+        Mockito.`when`(githubRemoteSource.starRepo("", "")).thenThrow(RuntimeException())
+        val result = githubRepository.starRepo("", "")
         assert(result.isFailure)
     }
 }

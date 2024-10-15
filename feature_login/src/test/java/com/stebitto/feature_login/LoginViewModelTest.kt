@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 
 class LoginViewModelTest {
@@ -47,11 +47,10 @@ class LoginViewModelTest {
     @Test
     fun `login success`() = runTest {
         val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
-
-        Mockito.`when`(saveGithubTokenUseCase("")).thenReturn(Unit)
-
         loginViewModel.dispatch(LoginIntent.LoginSuccess(""))
         assertEquals(stateSuccess, loginViewModel.state.value)
+        // Verify that the saveGithubTokenUseCase was called with the correct token
+        verify(saveGithubTokenUseCase).invoke("")
     }
 
     @Test

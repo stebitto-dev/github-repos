@@ -34,7 +34,7 @@ class GetGithubUserRepoUseCaseTest {
     @Test
     fun `invoke should return success result and save user repos`() = runTest {
         Mockito.`when`(getGithubTokenUseCase()).thenReturn(Result.success(""))
-        Mockito.`when`(githubRepository.getUserRepos("")).thenReturn(Result.success(fakeReposDTO))
+        Mockito.`when`(githubRepository.getUserRepos()).thenReturn(Result.success(fakeReposDTO))
         val result = githubUserRepoUseCase()
         assert(result.isSuccess)
         // Verify that the user repos were saved to the repository
@@ -51,7 +51,7 @@ class GetGithubUserRepoUseCaseTest {
     @Test
     fun `invoke should return failure result if user repos retrieval fails`() = runTest {
         Mockito.`when`(getGithubTokenUseCase()).thenReturn(Result.success(""))
-        Mockito.`when`(githubRepository.getUserRepos("")).thenReturn(Result.failure(RuntimeException()))
+        Mockito.`when`(githubRepository.getUserRepos()).thenReturn(Result.failure(RuntimeException()))
         val result = githubUserRepoUseCase()
         assert(result.isFailure)
     }
