@@ -2,9 +2,9 @@ package com.stebitto.feature_user_repos
 
 import com.stebitto.common.api.MainDispatcherRule
 import com.stebitto.feature_user_repos.api.GetGithubUserRepoUseCase
-import com.stebitto.feature_user_repos.impl.presentation.UserRepoIntent
-import com.stebitto.feature_user_repos.impl.presentation.UserRepoState
-import com.stebitto.feature_user_repos.impl.presentation.UserRepoViewModel
+import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoIntent
+import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoState
+import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoViewModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before

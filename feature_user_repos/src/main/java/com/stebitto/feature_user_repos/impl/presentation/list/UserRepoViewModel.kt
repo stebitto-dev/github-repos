@@ -1,4 +1,4 @@
-package com.stebitto.feature_user_repos.impl.presentation
+package com.stebitto.feature_user_repos.impl.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

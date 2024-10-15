@@ -2,6 +2,7 @@
 agp = "8.7.0"
 kotlin = "2.0.20"
 coreKtx = "1.13.1"
+kspVersion = "2.0.20-1.0.24"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -70,4 +71,5 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 gms-services = { id = "com.google.gms.google-services", version.ref = "gmsVersion" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 

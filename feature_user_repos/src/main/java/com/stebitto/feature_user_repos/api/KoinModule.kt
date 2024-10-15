@@ -10,7 +10,8 @@ import com.stebitto.feature_user_repos.impl.data.GetGithubUserRepoUseCaseImpl
 import com.stebitto.feature_user_repos.impl.data.GithubLocalSource
 import com.stebitto.feature_user_repos.impl.data.GithubLocalSourceImpl
 import com.stebitto.feature_user_repos.impl.data.room.AppDatabase
-import com.stebitto.feature_user_repos.impl.presentation.UserRepoViewModel
+import com.stebitto.feature_user_repos.impl.presentation.detail.UserRepoDetailViewModel
+import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
@@ -34,6 +35,7 @@ val localDbModule = module {
 
 val featureUserReposModule = module {
     viewModel { UserRepoViewModel(get()) }
+    viewModel { UserRepoDetailViewModel(get()) }
     factory<GetGithubUserRepoUseCase> { GetGithubUserRepoUseCaseImpl(get(), get()) }
     factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
     factory<GithubLocalSource> { GithubLocalSourceImpl(get()) }

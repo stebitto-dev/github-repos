@@ -1,4 +1,4 @@
-package com.stebitto.feature_user_repos.impl.presentation
+package com.stebitto.feature_user_repos.impl.presentation.list
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -65,7 +65,9 @@ internal fun UserRepoList(
     when {
         isLoading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(modifier = Modifier.testTag(TEST_REPO_LIST_LOADING_INDICATOR))
+                CircularProgressIndicator(modifier = Modifier.testTag(
+                    TEST_REPO_LIST_LOADING_INDICATOR
+                ))
             }
         }
         errorMessage != null -> {

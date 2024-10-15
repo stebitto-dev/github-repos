@@ -4,10 +4,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
-import com.stebitto.feature_user_repos.impl.presentation.TEST_REPO_LIST_COLUMN
-import com.stebitto.feature_user_repos.impl.presentation.TEST_REPO_LIST_ERROR_MESSAGE
-import com.stebitto.feature_user_repos.impl.presentation.TEST_REPO_LIST_LOADING_INDICATOR
-import com.stebitto.feature_user_repos.impl.presentation.UserRepoList
+import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_LIST_COLUMN
+import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_LIST_ERROR_MESSAGE
+import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_LIST_LOADING_INDICATOR
+import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoList
 import org.junit.Rule
 import org.junit.Test
 
