@@ -10,8 +10,8 @@ internal class GithubLocalSourceImpl(
         appDatabase.userRepoDao().insertAll(repos)
     }
 
-    override suspend fun getUserRepoById(id: Int): UserRepoDBEntity? {
-        return appDatabase.userRepoDao().getRepoById(id)
+    override suspend fun getUserRepoByName(name: String): UserRepoDBEntity? {
+        return appDatabase.userRepoDao().getRepoByName(name)
     }
 
     override suspend fun getUserRepos(): List<UserRepoDBEntity> {

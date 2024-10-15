@@ -6,8 +6,8 @@ import com.stebitto.common.api.models.UserRepoDTO
 
 @Entity(tableName = "user_repos")
 internal data class UserRepoDBEntity(
-    @PrimaryKey val id: Int,
-    val name: String,
+    val id: Int,
+    @PrimaryKey val name: String,
     val description: String,
     val language: String,
     val numberOfStars: Int

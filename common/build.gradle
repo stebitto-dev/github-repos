@@ -48,4 +48,7 @@ dependencies {
     // compose
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.material3)
+
+    // okhttp3
+    implementation(libs.okhttp3)
 }

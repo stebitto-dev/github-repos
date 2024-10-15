@@ -12,8 +12,8 @@ internal interface UserRepoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(repos: List<UserRepoDBEntity>)
 
-    @Query("SELECT * FROM user_repos WHERE id = :id")
-    suspend fun getRepoById(id: Int): UserRepoDBEntity?
+    @Query("SELECT * FROM user_repos WHERE name = :name")
+    suspend fun getRepoByName(name: String): UserRepoDBEntity?
 
     @Query("SELECT * FROM user_repos")
     suspend fun getAllRepos(): List<UserRepoDBEntity>
