@@ -1,4 +1,4 @@
-package com.stebitto.feature_login.impl.presentation
+package com.stebitto.feature_login.impl
 
 import android.app.Activity
 import android.content.res.Configuration

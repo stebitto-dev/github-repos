@@ -9,7 +9,6 @@ internal class UserRepositoryImpl(
     private companion object {
         const val GITHUB_PREFERENCES_NAME = "github_preferences"
         const val GITHUB_TOKEN_KEY = "github_token"
-        const val GITHUB_USER_NAME_KEY = "github_user_name"
     }
 
     private val sharedPreferences =
@@ -23,20 +22,9 @@ internal class UserRepositoryImpl(
 
     override fun saveGithubToken(token: String) {
         sharedPreferences.edit().putString(GITHUB_TOKEN_KEY, token).apply()
-
     }
 
-    override fun saveUserName(name: String) {
-        sharedPreferences.edit().putString(GITHUB_USER_NAME_KEY, name).apply()
-    }
-
-    override fun getUserName(): Result<String> {
-        return sharedPreferences.getString(GITHUB_USER_NAME_KEY, null)?.let { name ->
-            Result.success(name)
-        } ?: Result.failure(Exception("No name found"))
-    }
-
-    override fun clearAll() {
-        sharedPreferences.edit().clear().apply()
+    override fun clearGithubToken() {
+        sharedPreferences.edit().remove(GITHUB_TOKEN_KEY).apply()
     }
 }

@@ -27,7 +27,6 @@ internal class LoginViewModel(
             is LoginIntent.LoginSuccess -> {
                 viewModelScope.launch {
                     userRepository.saveGithubToken(intent.accessToken)
-                    userRepository.saveUserName(intent.username)
                 }
 
                 _state.update {

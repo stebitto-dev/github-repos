@@ -47,11 +47,10 @@ class LoginViewModelTest {
     @Test
     fun `login success`() = runTest {
         val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
-        loginViewModel.dispatch(LoginIntent.LoginSuccess("", ""))
+        loginViewModel.dispatch(LoginIntent.LoginSuccess(""))
         assertEquals(stateSuccess, loginViewModel.state.value)
         // Verify that the saveGithubTokenUseCase was called with the correct token
         verify(userRepository).saveGithubToken("")
-        verify(userRepository).saveUserName("")
     }
 
     @Test
