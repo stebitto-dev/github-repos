@@ -8,6 +8,7 @@ import com.stebitto.common.api.models.UserRepoDTO
 internal data class UserRepoDBEntity(
     val id: Int,
     @PrimaryKey val name: String,
+    val fullName : String,
     val description: String,
     val language: String,
     val numberOfStars: Int
@@ -16,6 +17,7 @@ internal data class UserRepoDBEntity(
         return UserRepoDTO(
             id = id,
             name = name,
+            fullName = fullName,
             description = description,
             language = language,
             numberOfStars = numberOfStars
@@ -27,6 +29,7 @@ internal fun UserRepoDTO.toUserRepoDBEntity(): UserRepoDBEntity {
     return UserRepoDBEntity(
         id = id,
         name = name,
+        fullName = fullName,
         description = description,
         language = language,
         numberOfStars = numberOfStars

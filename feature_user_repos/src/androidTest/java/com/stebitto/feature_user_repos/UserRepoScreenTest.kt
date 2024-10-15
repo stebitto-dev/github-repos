@@ -44,7 +44,7 @@ class UserRepoScreenTest {
     fun test_showRepositoryList() {
         composeTestRule.setContent {
             UserRepoList(
-                repos = listOf(UserRepoPresentation(0, "", "", "", 0)),
+                repos = listOf(UserRepoPresentation(0, "", "", "", "", 0)),
                 isLoading = false,
                 errorMessage = null
             )

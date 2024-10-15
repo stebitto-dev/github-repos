@@ -36,8 +36,8 @@ class MainActivity : ComponentActivity() {
                             onLoginSuccess = { navController.navigate(UserReposRoutes.LIST.name) }
                         )
                         userReposRoutes(
-                            onRepoClick = { repoId ->
-                                navController.navigate("${UserReposRoutes.DETAIL.name}/$repoId")
+                            onRepoClick = { owner, repoName ->
+                                navController.navigate("${UserReposRoutes.DETAIL.name}/$owner/$repoName")
                             }
                         )
                     }

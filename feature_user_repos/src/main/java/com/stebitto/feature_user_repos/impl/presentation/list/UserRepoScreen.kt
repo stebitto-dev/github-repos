@@ -39,7 +39,7 @@ internal const val TEST_REPO_LIST_COLUMN = "TEST_REPO_LIST_COLUMN"
 @Composable
 internal fun UserRepoScreen(
     viewModel: UserRepoViewModel = koinViewModel(),
-    onRepoClick: (id: Int) -> Unit = {}
+    onRepoClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
 ) {
     val uiState = viewModel.state.collectAsState()
 
@@ -51,7 +51,7 @@ internal fun UserRepoScreen(
         repos = uiState.value.repos,
         isLoading = uiState.value.isLoading,
         errorMessage = uiState.value.errorMessage,
-        onRepoClick = onRepoClick
+        onRepoClick = { fullName -> onRepoClick(fullName.split("/")[0], fullName.split("/")[1]) }
     )
 }
 
@@ -60,7 +60,7 @@ internal fun UserRepoList(
     repos: List<UserRepoPresentation>,
     isLoading: Boolean,
     errorMessage: String?,
-    onRepoClick: (id: Int) -> Unit = {}
+    onRepoClick: (repoFullName: String) -> Unit = {}
 ) {
     when {
         isLoading -> {
@@ -77,7 +77,9 @@ internal fun UserRepoList(
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(16.dp).testTag(TEST_REPO_LIST_ERROR_MESSAGE)
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .testTag(TEST_REPO_LIST_ERROR_MESSAGE)
                 )
             }
         }
@@ -99,13 +101,13 @@ internal fun UserRepoList(
 @Composable
 internal fun RepositoryCard(
     repository: UserRepoPresentation,
-    onItemClick: (id: Int) -> Unit = {}
+    onItemClick: (repoFullName: String) -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onItemClick(repository.id) },
+            .clickable { onItemClick(repository.fullName) },
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Column(
@@ -143,6 +145,7 @@ internal fun UserRepoListPreview() {
         val repository = UserRepoPresentation(
             id = 1,
             name = "My first repository",
+            fullName = "",
             description = "This is my first repository",
             language = "Kotlin",
             numberOfStars = 100
@@ -172,6 +175,7 @@ internal fun RepositoryCardPreview() {
             repository = UserRepoPresentation(
                 id = 1,
                 name = "My first repository",
+                fullName = "",
                 description = "This is my first repository",
                 language = "Kotlin",
                 numberOfStars = 100

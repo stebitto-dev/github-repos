@@ -18,12 +18,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun UserRepoDetailScreen(
     viewModel: UserRepoDetailViewModel = koinViewModel(),
-    repoId: Int
+    owner: String,
+    repoName: String
 ) {
     val uiState = viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.dispatch(UserRepoDetailIntent.LoadUserRepo(repoId))
+        viewModel.dispatch(UserRepoDetailIntent.LoadUserRepo(owner, repoName))
     }
 
     RepositoryDetailScreen(repo = uiState.value.userRepo)

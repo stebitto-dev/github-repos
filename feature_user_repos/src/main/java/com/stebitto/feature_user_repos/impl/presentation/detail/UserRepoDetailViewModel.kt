@@ -20,14 +20,16 @@ internal class UserRepoDetailViewModel(
 
     override fun dispatch(intent: UserRepoDetailIntent) {
         when (intent) {
-            is UserRepoDetailIntent.LoadUserRepo -> loadUserRepo(intent.id)
+            is UserRepoDetailIntent.LoadUserRepo -> {
+                _state.update { it.copy(isLoading = true) }
+                loadUserRepo(owner = intent.owner, repoName = intent.repoName)
+            }
         }
     }
 
-    private fun loadUserRepo(id: Int) {
+    private fun loadUserRepo(owner: String, repoName: String) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            githubRepository.getUserRepoById(id)
+            githubRepository.getUserRepoByName(owner, repoName)
                 .onSuccess { repo ->
                     _state.update {
                         UserRepoDetailState(
