@@ -3,6 +3,7 @@ package com.stebitto.feature_user_repos
 import com.stebitto.common.api.models.UserRepoDTO
 import com.stebitto.common.api.models.UserRepoDetailDTO
 import com.stebitto.feature_user_repos.impl.models.UserRepoDBEntity
+import com.stebitto.feature_user_repos.impl.models.UserRepoDetailPresentation
 import com.stebitto.feature_user_repos.impl.models.UserRepoDetailRemote
 import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
 import com.stebitto.feature_user_repos.impl.models.UserRepoRemote
@@ -30,7 +31,7 @@ internal val userRepoPresentation4 = UserRepoPresentation(4, "Repo 4", "octocat"
 
 internal val userRepoDetailDTO = UserRepoDetailDTO(1, "Repo 1", "octocat", "Description 1", "Kotlin", false, "", 2, 1, 0, true)
 internal val userRepoRemoteDetail = UserRepoDetailRemote(1, "Repo 1", "octocat/Repo 1", "Description 1", "Kotlin", false, "", 2, 1, 0)
-internal val userRepoDetailPresentation = UserRepoDetailDTO(1, "Repo 1", "octocat", "Description 1", "Kotlin", false, "", 2, 1, 0, true)
+internal val userRepoDetailPresentation = UserRepoDetailPresentation(1, "Repo 1", "octocat", "Description 1", "Kotlin", false, "", 2, 1, 0, true)
 
 internal val fakeReposDTO = listOf(
     userRepoDTO1, userRepoDTO2, userRepoDTO3, userRepoDTO4
