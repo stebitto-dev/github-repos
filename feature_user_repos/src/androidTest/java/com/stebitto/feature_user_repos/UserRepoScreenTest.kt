@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
+import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_EMPTY_LIST
 import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_LIST_COLUMN
 import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_LIST_ERROR_MESSAGE
 import com.stebitto.feature_user_repos.impl.presentation.list.TEST_REPO_LIST_LOADING_INDICATOR
@@ -38,6 +39,18 @@ class UserRepoScreenTest {
             )
         }
         composeTestRule.onNodeWithTag(TEST_REPO_LIST_ERROR_MESSAGE).assertIsDisplayed()
+    }
+
+    @Test
+    fun test_showNoRepositoryFound() {
+        composeTestRule.setContent {
+            UserRepoList(
+                repos = emptyList(),
+                isLoading = false,
+                errorMessage = null
+            )
+        }
+        composeTestRule.onNodeWithTag(TEST_REPO_EMPTY_LIST).assertIsDisplayed()
     }
 
     @Test
