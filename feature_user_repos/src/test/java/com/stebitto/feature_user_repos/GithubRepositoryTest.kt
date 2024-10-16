@@ -101,7 +101,6 @@ class GithubRepositoryTest {
     @Test
     fun `getUserRepoByName should return failure result if get repo fails`() = runTest {
         Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
-        Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenThrow(RuntimeException())
         val result = githubRepository.getUserRepoByName("", "")
         assert(result.isFailure)
     }
