@@ -82,33 +82,24 @@ class GithubRepositoryTest {
     }
 
     @Test
-    fun `getUserRepoByName should return success result with remote`() = runTest {
-        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenReturn(userRepoRemote1)
+    fun `getUserRepoByName should return success result`() = runTest {
+        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenReturn(userRepoRemoteDetail)
+        Mockito.`when`(githubRemoteSource.checkIfRepoStarred("", "")).thenReturn(true)
         val result = githubRepository.getUserRepoByName("", "")
         assert(result.isSuccess)
-        assertEquals(result.getOrNull(), userRepoDTO1)
+        assertEquals(result.getOrNull(), userRepoDetailDTO)
     }
 
     @Test
-    fun `getUserRepoByName should return success result with local`() = runTest {
-        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
-        Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenReturn(userRepoDBEntity1)
+    fun `getUserRepoByName should return failure result if repo starred fails`() = runTest {
+        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenReturn(userRepoRemoteDetail)
+        Mockito.`when`(githubRemoteSource.checkIfRepoStarred("", "")).thenThrow(RuntimeException())
         val result = githubRepository.getUserRepoByName("", "")
-        assert(result.isSuccess)
-        assertEquals(result.getOrNull(), userRepoDTO1)
+        assert(result.isFailure)
     }
 
     @Test
-    fun `getUserRepoByName should return failure result with local null value`() = runTest {
-        Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
-        Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenReturn(null)
-        val result = githubRepository.getUserRepoByName("", "")
-        assert(result.isSuccess)
-        assert(result.getOrNull() == null)
-    }
-
-    @Test
-    fun `getUserRepoByName should return failure result`() = runTest {
+    fun `getUserRepoByName should return failure result if get repo fails`() = runTest {
         Mockito.`when`(githubRemoteSource.getRepo("", "")).thenThrow(RuntimeException())
         Mockito.`when`(githubLocalSource.getUserRepoByName("")).thenThrow(RuntimeException())
         val result = githubRepository.getUserRepoByName("", "")
@@ -126,6 +117,20 @@ class GithubRepositoryTest {
     fun `starRepo should return failure result`() = runTest {
         Mockito.`when`(githubRemoteSource.starRepo("", "")).thenThrow(RuntimeException())
         val result = githubRepository.starRepo("", "")
+        assert(result.isFailure)
+    }
+
+    @Test
+    fun `unstarRepo should return success result`() = runTest {
+        Mockito.`when`(githubRemoteSource.unstarRepo("", "")).thenReturn(Unit)
+        val result = githubRepository.unstarRepo("", "")
+        assert(result.isSuccess)
+    }
+
+    @Test
+    fun `unstarRepo should return failure result`() = runTest {
+        Mockito.`when`(githubRemoteSource.unstarRepo("", "")).thenThrow(RuntimeException())
+        val result = githubRepository.unstarRepo("", "")
         assert(result.isFailure)
     }
 }
