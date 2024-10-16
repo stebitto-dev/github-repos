@@ -12,6 +12,10 @@ import com.stebitto.feature_user_repos.impl.data.retrofit.GitHubService
 import com.stebitto.feature_user_repos.impl.data.room.AppDatabase
 import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCase
 import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.usecases.StarGithubRepoUseCase
+import com.stebitto.feature_user_repos.impl.data.usecases.StarGithubRepoUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.usecases.UnstarGithubRepoUseCase
+import com.stebitto.feature_user_repos.impl.data.usecases.UnstarGithubRepoUseCaseImpl
 import com.stebitto.feature_user_repos.impl.presentation.detail.UserRepoDetailViewModel
 import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoViewModel
 import okhttp3.OkHttpClient
@@ -37,8 +41,10 @@ val localDbModule = module {
 
 val featureUserReposModule = module {
     viewModel { UserRepoViewModel(get()) }
-    viewModel { UserRepoDetailViewModel(get()) }
+    viewModel { UserRepoDetailViewModel(get(), get(), get()) }
     factory<GetGithubUserRepoListUseCase> { GetGithubUserRepoListUseCaseImpl(get()) }
+    factory<StarGithubRepoUseCase> { StarGithubRepoUseCaseImpl(get()) }
+    factory<UnstarGithubRepoUseCase> { UnstarGithubRepoUseCaseImpl(get()) }
     factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
     factory<GithubLocalSource> { GithubLocalSourceImpl(get()) }
     single<GithubRepository> { GithubRepositoryImpl(get(), get()) }

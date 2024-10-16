@@ -34,6 +34,7 @@ import org.koin.androidx.compose.koinViewModel
 
 internal const val TEST_REPO_LIST_ERROR_MESSAGE = "TEST_REPO_LIST_ERROR_MESSAGE"
 internal const val TEST_REPO_LIST_LOADING_INDICATOR = "TEST_REPO_LIST_LOADING_INDICATOR"
+internal const val TEST_REPO_EMPTY_LIST = "TEST_REPO_EMPTY_LIST"
 internal const val TEST_REPO_LIST_COLUMN = "TEST_REPO_LIST_COLUMN"
 
 @Composable
@@ -73,9 +74,7 @@ internal fun UserRepoList(
     when {
         isLoading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(modifier = Modifier.testTag(
-                    TEST_REPO_LIST_LOADING_INDICATOR
-                ))
+                CircularProgressIndicator(modifier = Modifier.testTag(TEST_REPO_LIST_LOADING_INDICATOR))
             }
         }
         errorMessage != null -> {
@@ -88,6 +87,18 @@ internal fun UserRepoList(
                     modifier = Modifier
                         .padding(16.dp)
                         .testTag(TEST_REPO_LIST_ERROR_MESSAGE)
+                )
+            }
+        }
+        repos.isEmpty() -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = stringResource(R.string.empty_list_message),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .testTag(TEST_REPO_EMPTY_LIST)
                 )
             }
         }

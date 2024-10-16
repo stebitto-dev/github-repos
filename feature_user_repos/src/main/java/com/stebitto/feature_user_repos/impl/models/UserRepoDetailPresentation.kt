@@ -12,7 +12,8 @@ internal data class UserRepoDetailPresentation(
     val htmlUrl: String,
     val numberOfStars: Int,
     val numberOfWatchers: Int,
-    val numberOfIssues: Int
+    val numberOfIssues: Int,
+    val isStarred: Boolean
 )
 
 internal fun UserRepoDetailDTO.toDetailPresentationModel(): UserRepoDetailPresentation {
@@ -26,6 +27,7 @@ internal fun UserRepoDetailDTO.toDetailPresentationModel(): UserRepoDetailPresen
         numberOfWatchers = numberOfWatchers,
         numberOfIssues = numberOfIssues,
         private = private,
-        htmlUrl = htmlUrl
+        htmlUrl = htmlUrl,
+        isStarred = isStarred
     )
 }

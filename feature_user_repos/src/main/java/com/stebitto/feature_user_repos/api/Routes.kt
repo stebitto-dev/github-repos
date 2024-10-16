@@ -18,7 +18,7 @@ fun NavGraphBuilder.userReposRoutes(
         )
     }
     composable("${UserReposRoutes.DETAIL.name}/{owner}/{repoName}") { backStackEntry ->
-        val owner = backStackEntry.arguments?.getString("repoFullName")
+        val owner = backStackEntry.arguments?.getString("owner")
         val repoName = backStackEntry.arguments?.getString("repoName")
         UserRepoDetailScreen(owner = owner ?: "", repoName = repoName ?: "")
     }
