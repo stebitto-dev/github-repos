@@ -14,7 +14,7 @@ internal data class UserRepoRemote(
         return UserRepoDTO(
             id = id ?: -1,
             name = name ?: "",
-            fullName = full_name ?: "",
+            owner = full_name?.split("/")?.get(0) ?: "",
             description = description ?: "",
             language = language ?: "",
             numberOfStars = stargazers_count ?: 0

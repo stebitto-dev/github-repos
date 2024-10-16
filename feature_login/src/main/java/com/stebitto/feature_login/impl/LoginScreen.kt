@@ -51,9 +51,9 @@ internal fun LoginScreen(
 ) {
     val uiState = loginViewmodel.state.collectAsState()
 
-    LaunchedEffect(uiState.value.isLoggedIn) {
-        if (uiState.value.isLoggedIn) {
-            onLoginSuccess()
+    LaunchedEffect(Unit) {
+        loginViewmodel.sideEffects.collect { effect ->
+            if (effect is LoginEffect.LoginSuccess) onLoginSuccess()
         }
     }
 

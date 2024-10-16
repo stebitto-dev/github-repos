@@ -14,7 +14,7 @@ fun NavGraphBuilder.userReposRoutes(
 ) {
     composable(UserReposRoutes.LIST.name) {
         UserRepoScreen(
-            onRepoClick = onRepoClick
+            onNavigateToRepo = onRepoClick
         )
     }
     composable("${UserReposRoutes.DETAIL.name}/{owner}/{repoName}") { backStackEntry ->

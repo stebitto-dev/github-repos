@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.stebitto.common.api.MVIViewModel
 import com.stebitto.feature_user_repos.api.GithubRepository
 import com.stebitto.feature_user_repos.impl.models.toDetailPresentationModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -13,10 +15,13 @@ import kotlinx.coroutines.launch
 internal class UserRepoDetailViewModel(
     private val githubRepository: GithubRepository,
     initialState: UserRepoDetailState = UserRepoDetailState()
-) : MVIViewModel<UserRepoDetailState, UserRepoDetailIntent>, ViewModel() {
+) : MVIViewModel<UserRepoDetailState, UserRepoDetailIntent, UserRepoDetailEffect>, ViewModel() {
 
     private val _state = MutableStateFlow(initialState)
     override val state = _state.asStateFlow()
+
+    private val _sideEffects = MutableSharedFlow<UserRepoDetailEffect>()
+    override val sideEffects = _sideEffects.asSharedFlow()
 
     override fun dispatch(intent: UserRepoDetailIntent) {
         when (intent) {

@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_user_repos.R
 import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
@@ -39,19 +39,27 @@ internal const val TEST_REPO_LIST_COLUMN = "TEST_REPO_LIST_COLUMN"
 @Composable
 internal fun UserRepoScreen(
     viewModel: UserRepoViewModel = koinViewModel(),
-    onRepoClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
+    onNavigateToRepo: (owner: String, repoName: String) -> Unit = { _, _ -> }
 ) {
-    val uiState = viewModel.state.collectAsState()
+    val uiState = viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.dispatch(UserRepoIntent.FetchRepos)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffects.collect { effect ->
+            if (effect is UserRepoEffect.NavigateToRepoDetail) {
+                onNavigateToRepo(effect.owner, effect.repoName)
+            }
+        }
     }
 
     UserRepoList(
         repos = uiState.value.repos,
         isLoading = uiState.value.isLoading,
         errorMessage = uiState.value.errorMessage,
-        onRepoClick = { fullName -> onRepoClick(fullName.split("/")[0], fullName.split("/")[1]) }
+        onRepoClick = { owner, repoName -> viewModel.dispatch(UserRepoIntent.RepoClicked(owner, repoName)) }
     )
 }
 
@@ -60,7 +68,7 @@ internal fun UserRepoList(
     repos: List<UserRepoPresentation>,
     isLoading: Boolean,
     errorMessage: String?,
-    onRepoClick: (repoFullName: String) -> Unit = {}
+    onRepoClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
 ) {
     when {
         isLoading -> {
@@ -101,13 +109,13 @@ internal fun UserRepoList(
 @Composable
 internal fun RepositoryCard(
     repository: UserRepoPresentation,
-    onItemClick: (repoFullName: String) -> Unit = {}
+    onItemClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onItemClick(repository.fullName) },
+            .clickable { onItemClick(repository.owner, repository.name) },
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Column(
@@ -145,7 +153,7 @@ internal fun UserRepoListPreview() {
         val repository = UserRepoPresentation(
             id = 1,
             name = "My first repository",
-            fullName = "",
+            owner = "",
             description = "This is my first repository",
             language = "Kotlin",
             numberOfStars = 100
@@ -175,7 +183,7 @@ internal fun RepositoryCardPreview() {
             repository = UserRepoPresentation(
                 id = 1,
                 name = "My first repository",
-                fullName = "",
+                owner = "",
                 description = "This is my first repository",
                 language = "Kotlin",
                 numberOfStars = 100
