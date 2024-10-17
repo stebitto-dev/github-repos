@@ -29,8 +29,9 @@ import com.stebitto.common.R
 fun AppTopBar(
     showNavigateBack: Boolean,
     showSignOut: Boolean,
-    sharedTransitionScope: SharedTransitionScope? = null,
-    animatedContentScope: AnimatedContentScope? = null,
+    repoName: String? = null,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onNavigateBack: () -> Unit = {},
     onSignOut: () -> Unit = {}
 ) {
@@ -40,11 +41,25 @@ fun AppTopBar(
             titleContentColor = MaterialTheme.colorScheme.primary,
         ),
         title = {
-            Text(
-                stringResource(R.string.app_name),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (repoName != null) {
+                with(sharedTransitionScope) {
+                    Text(
+                        text = repoName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.sharedElement(
+                            state = rememberSharedContentState(key = repoName),
+                            animatedVisibilityScope = animatedContentScope
+                        )
+                    )
+                }
+            } else {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         },
         navigationIcon = {
             if (showNavigateBack) {
@@ -57,25 +72,16 @@ fun AppTopBar(
             }
         },
         actions = {
-            if (sharedTransitionScope != null && animatedContentScope != null) {
-                with(sharedTransitionScope) {
-                    Image(
-                        painter = painterResource(id = R.drawable.github_logo),
-                        contentDescription = stringResource(R.string.github_logo_content_description),
-                        modifier = Modifier
-                            .sharedElement(
-                                state = rememberSharedContentState(key = R.drawable.github_logo),
-                                animatedVisibilityScope = animatedContentScope
-                            )
-                            .size(24.dp),
-                        contentScale = ContentScale.Fit
-                    )
-                }
-            } else {
+            with(sharedTransitionScope) {
                 Image(
                     painter = painterResource(id = R.drawable.github_logo),
                     contentDescription = stringResource(R.string.github_logo_content_description),
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier
+                        .sharedElement(
+                            state = rememberSharedContentState(key = R.drawable.github_logo),
+                            animatedVisibilityScope = animatedContentScope
+                        )
+                        .size(24.dp),
                     contentScale = ContentScale.Fit
                 )
             }

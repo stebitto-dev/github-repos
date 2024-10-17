@@ -42,7 +42,7 @@ val localDbModule = module {
 }
 
 val featureUserReposModule = module {
-    viewModel { UserRepoViewModel(get(), get()) }
+    viewModel { UserRepoViewModel(get(), get(), get()) }
     viewModel { UserRepoDetailViewModel(get(), get(), get(), get()) }
     factory<GetGithubUserRepoListUseCase> { GetGithubUserRepoListUseCaseImpl(get()) }
     factory<StarGithubRepoUseCase> { StarGithubRepoUseCaseImpl(get()) }

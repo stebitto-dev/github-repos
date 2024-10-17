@@ -46,6 +46,8 @@ internal const val TEST_REPO_LIST_COLUMN = "TEST_REPO_LIST_COLUMN"
 @Composable
 internal fun UserRepoScreen(
     viewModel: UserRepoViewModel = koinViewModel(),
+    lastVisitedRepoOwner: String? = null,
+    lastVisitedRepoName: String? = null,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     onNavigateToRepo: (owner: String, repoName: String) -> Unit = { _, _ -> },
@@ -55,7 +57,11 @@ internal fun UserRepoScreen(
     val uiState = viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.dispatch(UserRepoIntent.FetchRepos)
+        if (lastVisitedRepoOwner != null && lastVisitedRepoName != null) {
+            viewModel.dispatch(UserRepoIntent.LoadLastVisitedRepo(lastVisitedRepoOwner, lastVisitedRepoName))
+        } else {
+            viewModel.dispatch(UserRepoIntent.FetchRepos)
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -86,6 +92,8 @@ internal fun UserRepoScreen(
             repos = uiState.value.repos,
             isLoading = uiState.value.isLoading,
             errorMessage = uiState.value.errorMessage,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = animatedContentScope,
             onRepoClick = { owner, repoName ->
                 viewModel.dispatch(UserRepoIntent.RepoClicked(owner, repoName))
             }
@@ -93,12 +101,15 @@ internal fun UserRepoScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun UserRepoList(
     modifier: Modifier = Modifier,
     repos: List<UserRepoPresentation>,
     isLoading: Boolean,
     errorMessage: String?,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     onRepoClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
 ) {
     when {
@@ -139,17 +150,25 @@ internal fun UserRepoList(
                     .padding(16.dp)
                     .testTag(TEST_REPO_LIST_COLUMN)
             ) {
-                items(repos, key = { it.id }) { repo ->
-                    RepositoryCard(repo, onItemClick = onRepoClick)
+                items(repos) { repo ->
+                    RepositoryCard(
+                        repository = repo,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedContentScope = animatedContentScope,
+                        onItemClick = onRepoClick
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun RepositoryCard(
     repository: UserRepoPresentation,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     onItemClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
 ) {
     Card(
@@ -166,10 +185,19 @@ internal fun RepositoryCard(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            Text(
-                text = repository.name.ifBlank { stringResource(R.string.no_name_available) },
-                style = MaterialTheme.typography.headlineSmall
-            )
+            if (sharedTransitionScope != null && animatedContentScope != null) {
+                with(sharedTransitionScope) {
+                    Text(
+                        text = repository.name.ifBlank { stringResource(R.string.no_name_available) },
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier
+                            .sharedElement(
+                                state = rememberSharedContentState(key = repository.name),
+                                animatedVisibilityScope = animatedContentScope
+                            )
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = repository.description.ifBlank { stringResource(R.string.no_description_available) },
@@ -185,6 +213,7 @@ internal fun RepositoryCard(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -214,6 +243,7 @@ internal fun UserRepoListPreview() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,

@@ -76,6 +76,7 @@ internal fun UserRepoDetailScreen(
             AppTopBar(
                 showSignOut = true,
                 showNavigateBack = true,
+                repoName = repoName,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,
                 onNavigateBack = { onNavigateBack() },

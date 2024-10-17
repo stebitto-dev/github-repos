@@ -18,11 +18,20 @@ fun NavGraphBuilder.userReposRoutes(
     onNavigateBack: () -> Unit = {},
     onSignOut: () -> Unit = {}
 ) {
+    var lastVisitedRepoOwner: String? = null
+    var lastVisitedRepoName: String? = null
+
     composable(UserReposRoutes.LIST.name) {
         UserRepoScreen(
+            lastVisitedRepoOwner = lastVisitedRepoOwner,
+            lastVisitedRepoName = lastVisitedRepoName,
             sharedTransitionScope = sharedTransitionScope,
             animatedContentScope = this@composable,
-            onNavigateToRepo = onRepoClick,
+            onNavigateToRepo = { owner, repoName ->
+                lastVisitedRepoOwner = owner
+                lastVisitedRepoName = repoName
+                onRepoClick(owner, repoName)
+            },
             onNavigateBack = onNavigateBack,
             onSignOut = onSignOut
         )
