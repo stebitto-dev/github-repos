@@ -33,7 +33,11 @@ fun NavGraphBuilder.userReposRoutes(
                 onRepoClick(owner, repoName)
             },
             onNavigateBack = onNavigateBack,
-            onSignOut = onSignOut
+            onSignOut = {
+                lastVisitedRepoOwner = null
+                lastVisitedRepoName = null
+                onSignOut()
+            }
         )
     }
     composable("${UserReposRoutes.DETAIL.name}/{owner}/{repoName}") { backStackEntry ->
@@ -45,7 +49,11 @@ fun NavGraphBuilder.userReposRoutes(
             sharedTransitionScope = sharedTransitionScope,
             animatedContentScope = this@composable,
             onNavigateBack = onNavigateBack,
-            onSignOut = onSignOut
+            onSignOut = {
+                lastVisitedRepoOwner = null
+                lastVisitedRepoName = null
+                onSignOut()
+            }
         )
     }
 }
