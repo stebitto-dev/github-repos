@@ -12,6 +12,8 @@ import com.stebitto.feature_user_repos.impl.data.retrofit.GitHubService
 import com.stebitto.feature_user_repos.impl.data.room.AppDatabase
 import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCase
 import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCaseImpl
+import com.stebitto.feature_user_repos.impl.data.usecases.SignOutUseCase
+import com.stebitto.feature_user_repos.impl.data.usecases.SignOutUseCaseImpl
 import com.stebitto.feature_user_repos.impl.data.usecases.StarGithubRepoUseCase
 import com.stebitto.feature_user_repos.impl.data.usecases.StarGithubRepoUseCaseImpl
 import com.stebitto.feature_user_repos.impl.data.usecases.UnstarGithubRepoUseCase
@@ -40,11 +42,12 @@ val localDbModule = module {
 }
 
 val featureUserReposModule = module {
-    viewModel { UserRepoViewModel(get()) }
-    viewModel { UserRepoDetailViewModel(get(), get(), get()) }
+    viewModel { UserRepoViewModel(get(), get()) }
+    viewModel { UserRepoDetailViewModel(get(), get(), get(), get()) }
     factory<GetGithubUserRepoListUseCase> { GetGithubUserRepoListUseCaseImpl(get()) }
     factory<StarGithubRepoUseCase> { StarGithubRepoUseCaseImpl(get()) }
     factory<UnstarGithubRepoUseCase> { UnstarGithubRepoUseCaseImpl(get()) }
+    factory<SignOutUseCase> { SignOutUseCaseImpl(get(),get()) }
     factory<GithubRemoteSource> { GithubRemoteSourceImpl(get()) }
     factory<GithubLocalSource> { GithubLocalSourceImpl(get()) }
     single<GithubRepository> { GithubRepositoryImpl(get(), get()) }

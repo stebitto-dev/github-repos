@@ -5,4 +5,5 @@ import com.stebitto.common.api.Intent
 internal sealed class UserRepoIntent : Intent {
     data object FetchRepos : UserRepoIntent()
     data class RepoClicked(val owner: String, val repoName: String) : UserRepoIntent()
+    data object SignOut : UserRepoIntent()
 }

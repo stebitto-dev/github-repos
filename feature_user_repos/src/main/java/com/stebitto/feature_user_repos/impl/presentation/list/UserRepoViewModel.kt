@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stebitto.common.api.MVIViewModel
 import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCase
+import com.stebitto.feature_user_repos.impl.data.usecases.SignOutUseCase
 import com.stebitto.feature_user_repos.impl.models.toPresentationModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 internal class UserRepoViewModel(
     private val getGithubUserRepoListUseCase: GetGithubUserRepoListUseCase,
+    private val signOutUseCase: SignOutUseCase,
     initialState: UserRepoState = UserRepoState()
 ) : MVIViewModel<UserRepoState, UserRepoIntent, UserRepoEffect>, ViewModel() {
 
@@ -42,6 +44,7 @@ internal class UserRepoViewModel(
                         )
                     )
                 }
+                UserRepoIntent.SignOut -> { signOut() }
             }
         }
     }
@@ -67,5 +70,13 @@ internal class UserRepoViewModel(
                     )
                 }
             }
+    }
+
+    private fun signOut() {
+        viewModelScope.launch {
+            signOutUseCase()
+                .onSuccess { _sideEffects.trySend(UserRepoEffect.SignOutSuccessful) }
+                .onFailure { exception -> _state.update { UserRepoState(errorMessage = exception.message) } }
+        }
     }
 }
