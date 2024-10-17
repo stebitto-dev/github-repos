@@ -67,6 +67,9 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kolin)
 
+    // turbine
+    testImplementation(libs.turbine)
+
     testImplementation libs.junit
     testImplementation libs.kotlin.coroutine.test
     androidTestImplementation libs.androidx.junit

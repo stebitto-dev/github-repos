@@ -1,9 +1,12 @@
 package com.stebitto.feature_user_repos
 
+import app.cash.turbine.turbineScope
 import com.stebitto.common.api.MainDispatcherRule
 import com.stebitto.feature_user_repos.api.GithubRepository
+import com.stebitto.feature_user_repos.impl.data.usecases.SignOutUseCase
 import com.stebitto.feature_user_repos.impl.data.usecases.StarGithubRepoUseCase
 import com.stebitto.feature_user_repos.impl.data.usecases.UnstarGithubRepoUseCase
+import com.stebitto.feature_user_repos.impl.presentation.detail.UserRepoDetailEffect
 import com.stebitto.feature_user_repos.impl.presentation.detail.UserRepoDetailIntent
 import com.stebitto.feature_user_repos.impl.presentation.detail.UserRepoDetailState
 import com.stebitto.feature_user_repos.impl.presentation.detail.UserRepoDetailViewModel
@@ -27,6 +30,8 @@ class UserRepoDetailViewModelTest {
     private lateinit var starGithubRepoUseCase: StarGithubRepoUseCase
     @Mock
     private lateinit var unstarGithubRepoUseCase: UnstarGithubRepoUseCase
+    @Mock
+    private lateinit var signOutUseCase: SignOutUseCase
 
     private lateinit var viewModel: UserRepoDetailViewModel
     private val initialState = UserRepoDetailState()
@@ -34,7 +39,13 @@ class UserRepoDetailViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        viewModel = UserRepoDetailViewModel(githubRepository, starGithubRepoUseCase, unstarGithubRepoUseCase, initialState)
+        viewModel = UserRepoDetailViewModel(
+            githubRepository,
+            starGithubRepoUseCase,
+            unstarGithubRepoUseCase,
+            signOutUseCase,
+            initialState
+        )
     }
 
     @Test
@@ -102,6 +113,29 @@ class UserRepoDetailViewModelTest {
         Mockito.`when`(unstarGithubRepoUseCase(owner = "", repoName = "")).thenReturn(Result.failure(Exception(errorMessage)))
 
         viewModel.dispatch(UserRepoDetailIntent.StarClicked(owner = "", repoName = "", isStarred = true))
+        assertEquals(failureState, viewModel.state.value)
+    }
+
+    @Test
+    fun `test signOut success`() = runTest {
+        turbineScope {
+            Mockito.`when`(signOutUseCase()).thenReturn(Result.success(Unit))
+            val sideEffectReceiver = viewModel.sideEffects.testIn(backgroundScope)
+
+            viewModel.dispatch(UserRepoDetailIntent.SignOut)
+
+            assertEquals(UserRepoDetailEffect.SignOutSuccessful, sideEffectReceiver.awaitItem())
+        }
+    }
+
+    @Test
+    fun `test signOut failure`() = runTest {
+        val errorMessage = "Error message"
+        val failureState = UserRepoDetailState(isLoading = false, userRepo = null, errorMessage = errorMessage)
+
+        Mockito.`when`(signOutUseCase()).thenReturn(Result.failure(Exception(errorMessage)))
+
+        viewModel.dispatch(UserRepoDetailIntent.SignOut)
         assertEquals(failureState, viewModel.state.value)
     }
 }

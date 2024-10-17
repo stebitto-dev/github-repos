@@ -1,7 +1,9 @@
 package com.stebitto.feature_login
 
+import app.cash.turbine.turbineScope
 import com.stebitto.common.api.MainDispatcherRule
 import com.stebitto.common.api.UserRepository
+import com.stebitto.feature_login.impl.LoginEffect
 import com.stebitto.feature_login.impl.LoginIntent
 import com.stebitto.feature_login.impl.LoginState
 import com.stebitto.feature_login.impl.LoginViewModel
@@ -46,11 +48,17 @@ class LoginViewModelTest {
 
     @Test
     fun `login success`() = runTest {
-        val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
-        loginViewModel.dispatch(LoginIntent.LoginSuccess(""))
-        assertEquals(stateSuccess, loginViewModel.state.value)
-        // Verify that the saveGithubTokenUseCase was called with the correct token
-        verify(userRepository).saveGithubToken("")
+        turbineScope {
+            val stateSuccess = LoginState(isLoading = false, isLoggedIn = true, errorMessage = null)
+            val sideEffectReceiver = loginViewModel.sideEffects.testIn(backgroundScope)
+
+            loginViewModel.dispatch(LoginIntent.LoginSuccess(""))
+
+            assertEquals(stateSuccess, loginViewModel.state.value)
+            assertEquals(LoginEffect.LoginSuccess, sideEffectReceiver.awaitItem())
+            // Verify that the saveGithubTokenUseCase was called with the correct token
+            verify(userRepository).saveGithubToken("")
+        }
     }
 
     @Test
