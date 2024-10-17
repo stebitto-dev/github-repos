@@ -8,12 +8,13 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-coroutineTestVersion = "1.9.0-RC.2"
+coroutineTestVersion = "1.9.0"
 koinBomVersion = "3.5.6"
 composeBomVersion = "2024.09.03"
 composeActivityVersion = "1.9.2"
 composeNavigationVerson = "2.8.2"
 composeUiToolingVersion = "1.7.3"
+composeSystemUIControllerVersion = "0.32.0"
 mockitoCoreVersion = "4.8.0"
 mockitoKotlinVersion = "4.0.0"
 gmsVersion = "4.4.2"
@@ -48,6 +49,7 @@ compose-activity = { module = "androidx.activity:activity-compose", version.ref 
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigationVerson" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUiToolingVersion" }
 compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "composeSystemUIControllerVersion" }
 
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp3Version" }
 

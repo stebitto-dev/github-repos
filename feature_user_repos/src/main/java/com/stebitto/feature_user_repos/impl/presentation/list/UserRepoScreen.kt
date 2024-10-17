@@ -149,6 +149,9 @@ internal fun RepositoryCard(
             .fillMaxWidth()
             .padding(8.dp)
             .clickable { onItemClick(repository.owner, repository.name) },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Column(
