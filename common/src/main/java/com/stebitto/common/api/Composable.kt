@@ -17,10 +17,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.stebitto.common.R
 
@@ -97,3 +103,34 @@ fun AppTopBar(
         }
     )
 }
+
+fun Modifier.customShadow(
+    color: Color,
+    blurRadius: Dp,
+    spread: Dp
+) = this.then(
+    Modifier.drawBehind {
+        drawIntoCanvas { canvas ->
+            val paint = Paint()
+            val frameworkPaint = paint.asFrameworkPaint()
+            frameworkPaint.color = color.copy(alpha = 0.7f).toArgb()
+            frameworkPaint.setShadowLayer(
+                blurRadius.toPx(),
+                spread.toPx(),
+                spread.toPx(),
+                color.toArgb()
+            )
+            canvas.save()
+            canvas.drawRoundRect(
+                0f,
+                0f,
+                size.width,
+                size.height,
+                20.dp.toPx(),
+                20.dp.toPx(),
+                paint
+            )
+            canvas.restore()
+        }
+    }
+)

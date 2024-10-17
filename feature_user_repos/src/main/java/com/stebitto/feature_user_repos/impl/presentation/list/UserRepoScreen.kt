@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.stebitto.common.api.AppTopBar
+import com.stebitto.common.api.customShadow
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_user_repos.R
 import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
@@ -175,11 +177,15 @@ internal fun RepositoryCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .customShadow(
+                color = MaterialTheme.colorScheme.onSurface,
+                blurRadius = 4.dp,
+                spread = 6.dp
+            )
             .clickable { onItemClick(repository.owner, repository.name) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
-        ),
-        elevation = CardDefaults.cardElevation(2.dp)
+        )
     ) {
         Column(
             modifier = Modifier
