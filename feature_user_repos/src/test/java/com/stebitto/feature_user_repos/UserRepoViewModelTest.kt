@@ -2,6 +2,7 @@ package com.stebitto.feature_user_repos
 
 import app.cash.turbine.turbineScope
 import com.stebitto.common.api.MainDispatcherRule
+import com.stebitto.feature_user_repos.api.GithubRepository
 import com.stebitto.feature_user_repos.impl.data.usecases.GetGithubUserRepoListUseCase
 import com.stebitto.feature_user_repos.impl.data.usecases.SignOutUseCase
 import com.stebitto.feature_user_repos.impl.presentation.list.UserRepoEffect
@@ -23,6 +24,8 @@ class UserRepoViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Mock
+    private lateinit var githubRepository: GithubRepository
+    @Mock
     private lateinit var getGithubUserRepoListUseCase: GetGithubUserRepoListUseCase
     @Mock
     private lateinit var signOutUseCase: SignOutUseCase
@@ -33,7 +36,7 @@ class UserRepoViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        viewModel = UserRepoViewModel(getGithubUserRepoListUseCase, signOutUseCase, initialState)
+        viewModel = UserRepoViewModel(githubRepository, getGithubUserRepoListUseCase, signOutUseCase, initialState)
     }
 
     @Test
@@ -71,6 +74,39 @@ class UserRepoViewModelTest {
 
             assertEquals(UserRepoEffect.NavigateToRepoDetail("", ""), sideEffectReceiver.awaitItem())
         }
+    }
+
+    @Test
+    fun `dispatch LoadLastVisitedRepo, test success state`() = runTest {
+        val initialState = UserRepoState(repos = fakeReposPresentation)
+        val fakeReposPresentationModified = listOf(
+            userRepoPresentation1.copy(
+                id = userRepoDetailDTO.id,
+                name = userRepoDetailDTO.name,
+                owner = userRepoDetailDTO.owner,
+                description = userRepoDetailDTO.description,
+                language = userRepoDetailDTO.language,
+                numberOfStars = userRepoDetailDTO.numberOfStars,
+            ), userRepoPresentation2, userRepoPresentation3, userRepoPresentation4
+        )
+        val successState = UserRepoState(repos = fakeReposPresentationModified)
+        val viewModel = UserRepoViewModel(githubRepository, getGithubUserRepoListUseCase, signOutUseCase, initialState)
+
+        Mockito.`when`(githubRepository.getUserRepoByName("", "")).thenReturn(Result.success(userRepoDetailDTO))
+
+        viewModel.dispatch(UserRepoIntent.LoadLastVisitedRepo("", ""))
+        assertEquals(successState, viewModel.state.value)
+    }
+
+    @Test
+    fun `dispatch LoadLastVisitedRepo, test failure state`() = runTest {
+        val errorMessage = "Error message"
+        val failureState = UserRepoState(errorMessage = errorMessage)
+
+        Mockito.`when`(githubRepository.getUserRepoByName("", "")).thenReturn(Result.failure(Exception(errorMessage)))
+
+        viewModel.dispatch(UserRepoIntent.LoadLastVisitedRepo("", ""))
+        assertEquals(failureState, viewModel.state.value)
     }
 
     @Test
