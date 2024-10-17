@@ -81,6 +81,7 @@ internal class UserRepoViewModel(
         viewModelScope.launch {
             githubRepository.getUserRepoByName(owner, repoName)
                 .onSuccess { userRepoDetailDTO ->
+                    // Update only corresponding repo in the list
                     val repoListUpdated = state.value.repos.toMutableList().map { repo ->
                         if (repo.name == userRepoDetailDTO?.name) {
                             userRepoDetailDTO.toPresentationModel()
@@ -96,7 +97,7 @@ internal class UserRepoViewModel(
                         )
                     }
                 }
-                .onFailure { exception -> _state.update { UserRepoState(errorMessage = exception.message) } }
+            // onFailure do nothing, show current info
         }
     }
 

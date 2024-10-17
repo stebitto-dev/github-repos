@@ -99,17 +99,6 @@ class UserRepoViewModelTest {
     }
 
     @Test
-    fun `dispatch LoadLastVisitedRepo, test failure state`() = runTest {
-        val errorMessage = "Error message"
-        val failureState = UserRepoState(errorMessage = errorMessage)
-
-        Mockito.`when`(githubRepository.getUserRepoByName("", "")).thenReturn(Result.failure(Exception(errorMessage)))
-
-        viewModel.dispatch(UserRepoIntent.LoadLastVisitedRepo("", ""))
-        assertEquals(failureState, viewModel.state.value)
-    }
-
-    @Test
     fun `test signOut success`() = runTest {
         turbineScope {
             Mockito.`when`(signOutUseCase()).thenReturn(Result.success(Unit))
