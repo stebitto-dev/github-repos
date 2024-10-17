@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -142,7 +143,8 @@ internal fun LoginCard(
                                 )
                                 .width(100.dp)
                                 .height(100.dp),
-                            contentScale = ContentScale.Fit
+                            contentScale = ContentScale.Fit,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                         )
                     }
                 }

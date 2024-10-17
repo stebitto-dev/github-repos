@@ -79,7 +79,7 @@ fun AppTopBar(
         },
         actions = {
             with(sharedTransitionScope) {
-                Image(
+                Icon(
                     painter = painterResource(id = R.drawable.github_logo),
                     contentDescription = stringResource(R.string.github_logo_content_description),
                     modifier = Modifier
@@ -87,8 +87,7 @@ fun AppTopBar(
                             state = rememberSharedContentState(key = R.drawable.github_logo),
                             animatedVisibilityScope = animatedContentScope
                         )
-                        .size(24.dp),
-                    contentScale = ContentScale.Fit
+                        .size(24.dp)
                 )
             }
 
