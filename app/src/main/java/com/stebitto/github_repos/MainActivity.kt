@@ -3,9 +3,6 @@ package com.stebitto.github_repos
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -22,25 +19,31 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                Scaffold { innerPadding ->
-                    val navController = rememberNavController()
+                val navController = rememberNavController()
+                val isUserLoggedIn = FirebaseAuth.getInstance().currentUser != null
 
-                    val isUserLoggedIn = FirebaseAuth.getInstance().currentUser != null
-
-                    NavHost(
-                        navController = navController,
-                        startDestination = if (isUserLoggedIn) UserReposRoutes.LIST.name else LoginRoutes.LOGIN.name,
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        loginRoutes(
-                            onLoginSuccess = { navController.navigate(UserReposRoutes.LIST.name) }
-                        )
-                        userReposRoutes(
-                            onRepoClick = { owner, repoName ->
-                                navController.navigate("${UserReposRoutes.DETAIL.name}/$owner/$repoName")
+                NavHost(
+                    navController = navController,
+                    startDestination = if (isUserLoggedIn) UserReposRoutes.LIST.name else LoginRoutes.LOGIN.name,
+                ) {
+                    loginRoutes(
+                        onLoginSuccess = {
+                            navController.navigate(UserReposRoutes.LIST.name) {
+                                popUpTo(LoginRoutes.LOGIN.name) { inclusive = true }
                             }
-                        )
-                    }
+                        }
+                    )
+                    userReposRoutes(
+                        onRepoClick = { owner, repoName ->
+                            navController.navigate("${UserReposRoutes.DETAIL.name}/$owner/$repoName")
+                        },
+                        onNavigateBack = { navController.popBackStack() },
+                        onSignOut = {
+                            navController.navigate(LoginRoutes.LOGIN.name) {
+                                popUpTo(UserReposRoutes.LIST.name) { inclusive = true }
+                            }
+                        }
+                    )
                 }
             }
         }

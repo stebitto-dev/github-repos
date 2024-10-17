@@ -10,14 +10,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stebitto.common.api.AppTopBar
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_user_repos.R
 import com.stebitto.feature_user_repos.impl.models.UserRepoDetailPresentation
@@ -45,26 +48,49 @@ internal const val TEST_REPO_DETAIL = "TEST_REPO_DETAIL"
 internal fun UserRepoDetailScreen(
     viewModel: UserRepoDetailViewModel = koinViewModel(),
     owner: String,
-    repoName: String
+    repoName: String,
+    onNavigateBack: () -> Unit,
+    onSignOut: () -> Unit
 ) {
-    val uiState = viewModel.state.collectAsState()
+    val uiState = viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.dispatch(UserRepoDetailIntent.LoadUserRepo(owner, repoName))
     }
 
-    RepositoryDetailScreen(
-        repo = uiState.value.userRepo,
-        isLoading = uiState.value.isLoading,
-        errorMessage = uiState.value.errorMessage,
-        onStarClick = { isStarred ->
-            viewModel.dispatch(UserRepoDetailIntent.StarClicked(owner, repoName, isStarred))
+    LaunchedEffect(Unit) {
+        viewModel.sideEffects.collect { effect ->
+            when (effect) {
+                UserRepoDetailEffect.SignOutSuccessful -> onSignOut()
+            }
         }
-    )
+    }
+
+    Scaffold(
+        topBar = {
+            AppTopBar(
+                showSignOut = true,
+                showNavigateBack = true,
+                onNavigateBack = { onNavigateBack() },
+                onSignOut = { viewModel.dispatch(UserRepoDetailIntent.SignOut) }
+            )
+        }
+    ) { innerPadding ->
+        RepositoryDetailScreen(
+            modifier = Modifier.padding(innerPadding),
+            repo = uiState.value.userRepo,
+            isLoading = uiState.value.isLoading,
+            errorMessage = uiState.value.errorMessage,
+            onStarClick = { isStarred ->
+                viewModel.dispatch(UserRepoDetailIntent.StarClicked(owner, repoName, isStarred))
+            }
+        )
+    }
 }
 
 @Composable
 internal fun RepositoryDetailScreen(
+    modifier: Modifier = Modifier,
     repo: UserRepoDetailPresentation?,
     isLoading: Boolean,
     errorMessage: String?,
@@ -72,14 +98,14 @@ internal fun RepositoryDetailScreen(
 ) {
     when {
         isLoading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(modifier = Modifier.testTag(
                     TEST_REPO_DETAIL_LOADING_INDICATOR
                 ))
             }
         }
         errorMessage != null -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = errorMessage,
                     color = MaterialTheme.colorScheme.error,
@@ -92,7 +118,7 @@ internal fun RepositoryDetailScreen(
             }
         }
         repo == null -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(R.string.no_repository_found),
                     textAlign = TextAlign.Center,
@@ -104,18 +130,19 @@ internal fun RepositoryDetailScreen(
             }
         }
         else -> {
-            RepositoryDetail(repo, onStarClick)
+            RepositoryDetail(modifier, repo, onStarClick)
         }
     }
 }
 
 @Composable
 internal fun RepositoryDetail(
+    modifier: Modifier = Modifier,
     repo: UserRepoDetailPresentation,
     onStarClick: (isStarred: Boolean) -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
             .testTag(TEST_REPO_DETAIL)
@@ -155,7 +182,7 @@ internal fun RepositoryDetail(
             Spacer(modifier = Modifier.width(16.dp))
 
             Icon(
-                imageVector = Icons.Filled.Warning,
+                imageVector = Icons.Filled.BugReport,
                 contentDescription = "Issues",
                 tint = Color.Gray
             )
@@ -165,7 +192,7 @@ internal fun RepositoryDetail(
             Spacer(modifier = Modifier.width(16.dp))
 
             Icon(
-                imageVector = Icons.Filled.Face,
+                imageVector = Icons.Filled.RemoveRedEye,
                 contentDescription = "Watchers",
                 tint = Color.Gray
             )

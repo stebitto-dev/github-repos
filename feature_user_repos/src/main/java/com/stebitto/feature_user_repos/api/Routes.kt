@@ -10,16 +10,25 @@ enum class UserReposRoutes {
 }
 
 fun NavGraphBuilder.userReposRoutes(
-    onRepoClick: (owner: String, repoName: String) -> Unit = { _, _ -> }
+    onRepoClick: (owner: String, repoName: String) -> Unit = { _, _ -> },
+    onNavigateBack: () -> Unit = {},
+    onSignOut: () -> Unit = {}
 ) {
     composable(UserReposRoutes.LIST.name) {
         UserRepoScreen(
-            onNavigateToRepo = onRepoClick
+            onNavigateToRepo = onRepoClick,
+            onNavigateBack = onNavigateBack,
+            onSignOut = onSignOut
         )
     }
     composable("${UserReposRoutes.DETAIL.name}/{owner}/{repoName}") { backStackEntry ->
         val owner = backStackEntry.arguments?.getString("owner")
         val repoName = backStackEntry.arguments?.getString("repoName")
-        UserRepoDetailScreen(owner = owner ?: "", repoName = repoName ?: "")
+        UserRepoDetailScreen(
+            owner = owner ?: "",
+            repoName = repoName ?: "",
+            onNavigateBack = onNavigateBack,
+            onSignOut = onSignOut
+        )
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.stebitto.common.api.theme.MyApplicationTheme
@@ -49,7 +50,7 @@ internal fun LoginScreen(
     loginViewmodel: LoginViewModel = koinViewModel(),
     onLoginSuccess: () -> Unit = {}
 ) {
-    val uiState = loginViewmodel.state.collectAsState()
+    val uiState = loginViewmodel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         loginViewmodel.sideEffects.collect { effect ->

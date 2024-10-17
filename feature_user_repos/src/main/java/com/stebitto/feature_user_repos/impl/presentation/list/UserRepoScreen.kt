@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.stebitto.common.api.AppTopBar
 import com.stebitto.common.api.theme.MyApplicationTheme
 import com.stebitto.feature_user_repos.R
 import com.stebitto.feature_user_repos.impl.models.UserRepoPresentation
@@ -40,7 +42,9 @@ internal const val TEST_REPO_LIST_COLUMN = "TEST_REPO_LIST_COLUMN"
 @Composable
 internal fun UserRepoScreen(
     viewModel: UserRepoViewModel = koinViewModel(),
-    onNavigateToRepo: (owner: String, repoName: String) -> Unit = { _, _ -> }
+    onNavigateToRepo: (owner: String, repoName: String) -> Unit = { _, _ -> },
+    onNavigateBack: () -> Unit = {},
+    onSignOut: () -> Unit = {}
 ) {
     val uiState = viewModel.state.collectAsStateWithLifecycle()
 
@@ -53,19 +57,37 @@ internal fun UserRepoScreen(
             if (effect is UserRepoEffect.NavigateToRepoDetail) {
                 onNavigateToRepo(effect.owner, effect.repoName)
             }
+            if (effect is UserRepoEffect.SignOutSuccessful) {
+                onSignOut()
+            }
         }
     }
 
-    UserRepoList(
-        repos = uiState.value.repos,
-        isLoading = uiState.value.isLoading,
-        errorMessage = uiState.value.errorMessage,
-        onRepoClick = { owner, repoName -> viewModel.dispatch(UserRepoIntent.RepoClicked(owner, repoName)) }
-    )
+    Scaffold(
+        topBar = {
+            AppTopBar(
+                showSignOut = true,
+                showNavigateBack = false,
+                onNavigateBack = { onNavigateBack() },
+                onSignOut = { viewModel.dispatch(UserRepoIntent.SignOut) }
+            )
+        }
+    ) { innerPadding ->
+        UserRepoList(
+            modifier = Modifier.padding(innerPadding),
+            repos = uiState.value.repos,
+            isLoading = uiState.value.isLoading,
+            errorMessage = uiState.value.errorMessage,
+            onRepoClick = { owner, repoName ->
+                viewModel.dispatch(UserRepoIntent.RepoClicked(owner, repoName))
+            }
+        )
+    }
 }
 
 @Composable
 internal fun UserRepoList(
+    modifier: Modifier = Modifier,
     repos: List<UserRepoPresentation>,
     isLoading: Boolean,
     errorMessage: String?,
@@ -73,12 +95,12 @@ internal fun UserRepoList(
 ) {
     when {
         isLoading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(modifier = Modifier.testTag(TEST_REPO_LIST_LOADING_INDICATOR))
             }
         }
         errorMessage != null -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = errorMessage,
                     color = MaterialTheme.colorScheme.error,
@@ -91,7 +113,7 @@ internal fun UserRepoList(
             }
         }
         repos.isEmpty() -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(R.string.empty_list_message),
                     textAlign = TextAlign.Center,
@@ -104,7 +126,7 @@ internal fun UserRepoList(
         }
         else -> {
             LazyColumn(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .padding(16.dp)
                     .testTag(TEST_REPO_LIST_COLUMN)

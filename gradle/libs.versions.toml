@@ -42,6 +42,7 @@ compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeB
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+compose-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "composeActivityVersion" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigationVerson" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUiToolingVersion" }
