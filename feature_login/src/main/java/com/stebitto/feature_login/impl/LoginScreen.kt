@@ -3,6 +3,9 @@ package com.stebitto.feature_login.impl
 import android.app.Activity
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,9 +48,12 @@ internal const val TEST_ERROR_MESSAGE = "TEST_ERROR_MESSAGE"
 internal const val TEST_LOADING_INDICATOR = "TEST_LOADING_INDICATOR"
 internal const val TEST_BUTTON_LOGIN = "TEST_BUTTON_LOGIN"
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun LoginScreen(
     loginViewmodel: LoginViewModel = koinViewModel(),
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onLoginSuccess: () -> Unit = {}
 ) {
     val uiState = loginViewmodel.state.collectAsStateWithLifecycle()
@@ -87,6 +93,8 @@ internal fun LoginScreen(
     LoginCard(
         isLoading = uiState.value.isLoading,
         errorMessage = uiState.value.errorMessage,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedContentScope = animatedContentScope,
         onLoginClick = {
             loginViewmodel.dispatch(LoginIntent.LoginButtonClicked)
             launcher.launch(signInIntent)
@@ -94,10 +102,13 @@ internal fun LoginScreen(
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun LoginCard(
     isLoading: Boolean,
     errorMessage: String?,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     onLoginClick: () -> Unit = {}
 ) {
     Box(
@@ -119,14 +130,22 @@ internal fun LoginCard(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.github_logo),
-                    contentDescription = stringResource(R.string.github_logo_content_description),
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp),
-                    contentScale = ContentScale.Fit
-                )
+                if (sharedTransitionScope != null && animatedContentScope != null) {
+                    with(sharedTransitionScope) {
+                        Image(
+                            painter = painterResource(id = com.stebitto.common.R.drawable.github_logo),
+                            contentDescription = stringResource(com.stebitto.common.R.string.github_logo_content_description),
+                            modifier = Modifier
+                                .sharedElement(
+                                    state = rememberSharedContentState(key = com.stebitto.common.R.drawable.github_logo),
+                                    animatedVisibilityScope = animatedContentScope
+                                )
+                                .width(100.dp)
+                                .height(100.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -168,6 +187,7 @@ internal fun LoginCard(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,

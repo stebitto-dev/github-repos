@@ -1,6 +1,9 @@
 package com.stebitto.feature_user_repos.impl.presentation.detail
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,11 +46,14 @@ internal const val TEST_REPO_DETAIL_LOADING_INDICATOR = "TEST_REPO_DETAIL_LOADIN
 internal const val TEST_REPO_DETAIL_NO_REPO_FOUND = "TEST_REPO_DETAIL_NO_REPO_FOUND"
 internal const val TEST_REPO_DETAIL = "TEST_REPO_DETAIL"
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun UserRepoDetailScreen(
     viewModel: UserRepoDetailViewModel = koinViewModel(),
     owner: String,
     repoName: String,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onNavigateBack: () -> Unit,
     onSignOut: () -> Unit
 ) {
@@ -71,6 +76,8 @@ internal fun UserRepoDetailScreen(
             AppTopBar(
                 showSignOut = true,
                 showNavigateBack = true,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope,
                 onNavigateBack = { onNavigateBack() },
                 onSignOut = { viewModel.dispatch(UserRepoDetailIntent.SignOut) }
             )

@@ -1,6 +1,9 @@
 package com.stebitto.feature_user_repos.impl.presentation.list
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,9 +42,12 @@ internal const val TEST_REPO_LIST_LOADING_INDICATOR = "TEST_REPO_LIST_LOADING_IN
 internal const val TEST_REPO_EMPTY_LIST = "TEST_REPO_EMPTY_LIST"
 internal const val TEST_REPO_LIST_COLUMN = "TEST_REPO_LIST_COLUMN"
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun UserRepoScreen(
     viewModel: UserRepoViewModel = koinViewModel(),
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     onNavigateToRepo: (owner: String, repoName: String) -> Unit = { _, _ -> },
     onNavigateBack: () -> Unit = {},
     onSignOut: () -> Unit = {}
@@ -68,6 +74,8 @@ internal fun UserRepoScreen(
             AppTopBar(
                 showSignOut = true,
                 showNavigateBack = false,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope,
                 onNavigateBack = { onNavigateBack() },
                 onSignOut = { viewModel.dispatch(UserRepoIntent.SignOut) }
             )

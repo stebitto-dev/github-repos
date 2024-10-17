@@ -1,5 +1,10 @@
 package com.stebitto.common.api
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -11,15 +16,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.stebitto.common.R
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 fun AppTopBar(
     showNavigateBack: Boolean,
     showSignOut: Boolean,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     onNavigateBack: () -> Unit = {},
     onSignOut: () -> Unit = {}
 ) {
@@ -46,6 +57,29 @@ fun AppTopBar(
             }
         },
         actions = {
+            if (sharedTransitionScope != null && animatedContentScope != null) {
+                with(sharedTransitionScope) {
+                    Image(
+                        painter = painterResource(id = R.drawable.github_logo),
+                        contentDescription = stringResource(R.string.github_logo_content_description),
+                        modifier = Modifier
+                            .sharedElement(
+                                state = rememberSharedContentState(key = R.drawable.github_logo),
+                                animatedVisibilityScope = animatedContentScope
+                            )
+                            .size(24.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.github_logo),
+                    contentDescription = stringResource(R.string.github_logo_content_description),
+                    modifier = Modifier.size(24.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+
             if (showSignOut) {
                 IconButton(onClick = { onSignOut() }) {
                     Icon(
