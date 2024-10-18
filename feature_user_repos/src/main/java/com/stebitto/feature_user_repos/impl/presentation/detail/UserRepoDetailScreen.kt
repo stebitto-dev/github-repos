@@ -74,9 +74,8 @@ internal fun UserRepoDetailScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                showSignOut = true,
                 showNavigateBack = true,
-                repoName = repoName,
+                showSignOut = true,
                 sharedTransitionScope = sharedTransitionScope,
                 animatedContentScope = animatedContentScope,
                 onNavigateBack = { onNavigateBack() },
@@ -86,9 +85,12 @@ internal fun UserRepoDetailScreen(
     ) { innerPadding ->
         RepositoryDetailScreen(
             modifier = Modifier.padding(innerPadding),
+            repoName = repoName,
             repo = uiState.value.userRepo,
             isLoading = uiState.value.isLoading,
             errorMessage = uiState.value.errorMessage,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = animatedContentScope,
             onStarClick = { isStarred ->
                 viewModel.dispatch(UserRepoDetailIntent.StarClicked(owner, repoName, isStarred))
             }
@@ -96,49 +98,78 @@ internal fun UserRepoDetailScreen(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun RepositoryDetailScreen(
     modifier: Modifier = Modifier,
+    repoName: String,
     repo: UserRepoDetailPresentation?,
     isLoading: Boolean,
     errorMessage: String?,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     onStarClick: (isStarred: Boolean) -> Unit = {}
 ) {
-    when {
-        isLoading -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(modifier = Modifier.testTag(
-                    TEST_REPO_DETAIL_LOADING_INDICATOR
-                ))
-            }
-        }
-        errorMessage != null -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Column(
+        modifier = modifier
+        .fillMaxSize()
+        .padding(16.dp)
+    ) {
+        if (sharedTransitionScope != null && animatedContentScope != null) {
+            with(sharedTransitionScope) {
                 Text(
-                    text = errorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .testTag(TEST_REPO_DETAIL_ERROR_MESSAGE)
+                    text = repoName,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.sharedElement(
+                        state = rememberSharedContentState(key = repoName),
+                        animatedVisibilityScope = animatedContentScope
+                    )
                 )
             }
         }
-        repo == null -> {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(R.string.no_repository_found),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .testTag(TEST_REPO_DETAIL_NO_REPO_FOUND)
-                )
+
+        when {
+            isLoading -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.testTag(
+                            TEST_REPO_DETAIL_LOADING_INDICATOR
+                        )
+                    )
+                }
             }
-        }
-        else -> {
-            RepositoryDetail(modifier, repo, onStarClick)
+
+            errorMessage != null -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .testTag(TEST_REPO_DETAIL_ERROR_MESSAGE)
+                    )
+                }
+            }
+
+            repo == null -> {
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = stringResource(R.string.no_repository_found),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .testTag(TEST_REPO_DETAIL_NO_REPO_FOUND)
+                    )
+                }
+            }
+
+            else -> {
+                RepositoryDetail(modifier, repo, onStarClick)
+            }
         }
     }
 }
@@ -151,18 +182,8 @@ internal fun RepositoryDetail(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
             .testTag(TEST_REPO_DETAIL)
     ) {
-        Text(
-            text = repo.name,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
         Text(text = stringResource(R.string.owner_label, repo.owner))
         Text(text = stringResource(R.string.description_label, repo.description))
         Text(text = stringResource(R.string.language_label, repo.language))
@@ -210,6 +231,7 @@ internal fun RepositoryDetail(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(name = "Light Mode")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
@@ -220,6 +242,7 @@ internal fun RepositoryDetail(
 internal fun RepositoryDetailScreenPreview() {
     MyApplicationTheme {
         RepositoryDetailScreen(
+            repoName = "My first repository",
             repo = null,
             isLoading = false,
             errorMessage = null
