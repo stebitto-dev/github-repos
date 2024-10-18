@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">github-repos</string>
+    <string name="github_logo_content_description">Github Logo</string>
+</resources>

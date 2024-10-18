@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "github-repos"
 include ':app'
+include ':common'
+include ':feature_login'
+include ':feature_user_repos'
