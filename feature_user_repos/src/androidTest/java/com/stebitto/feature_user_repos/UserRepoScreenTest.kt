@@ -1,5 +1,6 @@
 package com.stebitto.feature_user_repos
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -17,6 +18,7 @@ class UserRepoScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showLoading() {
         composeTestRule.setContent {
@@ -29,6 +31,7 @@ class UserRepoScreenTest {
         composeTestRule.onNodeWithTag(TEST_REPO_LIST_LOADING_INDICATOR).assertIsDisplayed()
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showError() {
         composeTestRule.setContent {
@@ -41,6 +44,7 @@ class UserRepoScreenTest {
         composeTestRule.onNodeWithTag(TEST_REPO_LIST_ERROR_MESSAGE).assertIsDisplayed()
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showNoRepositoryFound() {
         composeTestRule.setContent {
@@ -53,6 +57,7 @@ class UserRepoScreenTest {
         composeTestRule.onNodeWithTag(TEST_REPO_EMPTY_LIST).assertIsDisplayed()
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showRepositoryList() {
         composeTestRule.setContent {

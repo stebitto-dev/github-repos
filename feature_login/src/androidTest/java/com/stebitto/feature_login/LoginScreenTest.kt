@@ -1,5 +1,6 @@
 package com.stebitto.feature_login
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -15,6 +16,7 @@ class LoginScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showLoading() {
         composeTestRule.setContent {
@@ -23,6 +25,7 @@ class LoginScreenTest {
         composeTestRule.onNodeWithTag(TEST_LOADING_INDICATOR).assertIsDisplayed()
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showError() {
         composeTestRule.setContent {
@@ -31,6 +34,7 @@ class LoginScreenTest {
         composeTestRule.onNodeWithTag(TEST_ERROR_MESSAGE).assertIsDisplayed()
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     @Test
     fun test_showLoginButton() {
         composeTestRule.setContent {
